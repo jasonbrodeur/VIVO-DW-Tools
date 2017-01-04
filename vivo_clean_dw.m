@@ -1,6 +1,8 @@
 cd('/home/brodeujj/octave/VIVO');
 
-fid = fopen('MCM_VIVO_ALL_FACULTY-46514.tsv');
+
+
+fid = fopen('MCM_VIVO_ALL_FACULTY-46514.tsv','r');
 
 tline = fgetl(fid);
 %numcols = length(findstr(tline,'\t'))+1;
@@ -15,6 +17,9 @@ headers{i,1} = C{1,i}(1,1){1,1};
 dw(:,i) = C{1,i}(2:end,1);
 end
 
+%Open a document so that we can track bad data:
+fid_report = fopen('MCM_VIVO_ALL_FACULTY-46514-datareport.txt','w');
+
 fname_col = find(strcmp(headers,'FirstName')==1);
 lname_col = find(strcmp(headers,'LastName')==1);
 
@@ -24,7 +29,8 @@ lname_col = find(strcmp(headers,'LastName')==1);
 %%% following a hyphen
 %%% following 'MC' and 'MAC' at the start of a name
 
-% First Names
+
+%% First Names: %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for i = 1:1:length(dw(:,fname_col))
 tmp = lower(dw{i,fname_col});
 to_upper = 1;
@@ -40,7 +46,7 @@ dw{i,fname_col}= tmp;
 %dw{i,fname_col} = regexprep(tmp,'(\<[a-z])','${upper($1)}')
 end
 
-% Last Names
+%% Last Names: %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for i = 1:1:length(dw(:,lname_col))
 tmp = lower(dw{i,lname_col});
 to_upper = 1;
@@ -49,9 +55,46 @@ space = strfind(tmp, ' ');
 if length(space)>0; to_upper= [to_upper; space'+1]; end
 hyphen = strfind(tmp, '-');
 if length(hyphen)>0; to_upper= [to_upper; hyphen'+1]; end
-tmp(to_upper) = upper(tmp(to_upper));
-if strncmp(tmp(1:2),'mc',2)==1; to_upper = [to_upper; 3];end
-if strncmp(tmp(1:2),'mac',2)==1; to_upper = [to_upper; 4];end
+if strncmp(tmp,'mc',2)==1; to_upper = [to_upper; 3];end
+if strncmp(tmp,'mac',3)==1; to_upper = [to_upper; 4];end
 tmp(to_upper) = upper(tmp(to_upper));
 dw{i,lname_col}= tmp;
 end
+%%% Additional cleanup
+fprintf(fid_report,'%s\n','IDs requiring last name cleanup')
+% extra space on either side of hyphen:
+extra_space = strfind(dw(:,4),' - ');
+ind=find(cellfun('isempty',extra_space)==0);
+for i = 1:1:length(ind)
+fprintf(fid_report,'%s\n',dw{ind(i),1})
+dw{ind(i),4} = strrep(dw{ind(i),4},' - ','-');
+end
+% extra space on left side of hyphen:
+extra_space = strfind(dw(:,4),'- ');
+ind=find(cellfun('isempty',extra_space)==0);
+for i = 1:1:length(ind)
+fprintf(fid_report,'%s\n',dw{ind(i),1})
+dw{ind(i),4} = strrep(dw{ind(i),4},' - ','-');
+end
+% extra space on right side of hyphen:
+extra_space = strfind(dw(:,4),' -');
+ind=find(cellfun('isempty',extra_space)==0);
+for i = 1:1:length(ind)
+fprintf(fid_report,'%s\n',dw{ind(i),1})
+dw{ind(i),4} = strrep(dw{ind(i),4},' - ','-');
+end
+% two spaces between names:
+extra_space = strfind(dw(:,4),'  ');
+ind=find(cellfun('isempty',extra_space)==0);
+for i = 1:1:length(ind)
+fprintf(fid_report,'%s\n',dw{ind(i),1})
+dw{ind(i),4} = strrep(dw{ind(i),4},' - ','-');
+end
+
+
+
+
+
+
+
+fclose(fid_report);
