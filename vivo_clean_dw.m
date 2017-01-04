@@ -91,8 +91,21 @@ fprintf(fid_report,'%s\n',dw{ind(i),1})
 dw{ind(i),4} = strrep(dw{ind(i),4},' - ','-');
 end
 
+%% Position Title %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% load the positions lookup table
+fid_pos = fopen('vivo_lookup_positions.tsv','r');
+hdr_pos = fgetl(fid_pos);
+num_cols = length(regexp(hdr_pos,'\t'))+1;
+formatspec = repmat('%s',1,num_cols);
+D = textscan(fid_pos,formatspec,'Delimiter','\t');
+fclose(fid_pos);
+%for i = 1:1:num_cols
+%pos_list(:,i) = D{1,i}(:,1);
+%end
 
-
+pos_col = find(strcmp(headers,'Position')==1);
+%% Find all unique strings 
+unique_pos = unique(dw(:,pos_col));
 
 
 
