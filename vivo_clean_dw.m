@@ -1,6 +1,10 @@
-cd('/home/brodeujj/octave/VIVO');
+if ispc==1
+start_path = 'D:/Local/VIVO-DW-Tools';
+else
+start_path = '/home/brodeujj/octave/VIVO';
+end
 
-
+cd(start_path);
 
 fid = fopen('MCM_VIVO_ALL_FACULTY-46514.tsv','r');
 
@@ -13,13 +17,16 @@ C = textscan(fid,formatspec,'Delimiter','\t');
 fclose(fid);
 
 for i = 1:1:numcols2
-headers{i,1} = C{1,i}(1,1){1,1};
+% headers{i,1} = C{1,i}(1,1){1,1};
+headers{i,1} = C{1,i}{1,1};%{1,1};
+
 dw(:,i) = C{1,i}(2:end,1);
 end
 
 %Open a document so that we can track bad data:
 fid_report = fopen('MCM_VIVO_ALL_FACULTY-46514-datareport.txt','w');
 
+macid_col = find(strcmp(headers,'MAC ID')==1);
 fname_col = find(strcmp(headers,'FirstName')==1);
 lname_col = find(strcmp(headers,'LastName')==1);
 
@@ -29,6 +36,15 @@ lname_col = find(strcmp(headers,'LastName')==1);
 %%% following a hyphen
 %%% following 'MC' and 'MAC' at the start of a name
 
+%% MAC ID: %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+for i = 1:1:length(dw(:,macid_col))
+tmp = lower(dw{i,macid_col});
+
+dw{i,macid_col}= tmp;
+
+%tmp2{i,1} = regexprep(tmp,'(\<[a-z])','${upper($1)}');
+%dw{i,fname_col} = regexprep(tmp,'(\<[a-z])','${upper($1)}')
+end
 
 %% First Names: %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for i = 1:1:length(dw(:,fname_col))
@@ -104,10 +120,55 @@ fclose(fid_pos);
 %end
 
 pos_col = find(strcmp(headers,'Position')==1);
-%% Find all unique strings 
+
+%%% Find all unique strings; search for each unique string in the lookup
+%%% table. If it doesn't exist, make a note in the report. If it does
+%%% exist, replace the item with the proper text.
 unique_pos = unique(dw(:,pos_col));
+for i = 1:1:length(unique_pos)
+lookup_match = find(strcmp(D{1,1}(:,1),unique_pos{i,1})==1);
+    if isempty(lookup_match)==1
+    fprintf(fid_report,'%s\n','Positions to add to lookup table:')
+    fprintf(fid_report,'%s\n',unique_pos{i,1})
+    else
+    ind = find(strcmp(dw(:,pos_col),unique_pos{i,1})==1);
+    %%%substitute all positions of this type with the proper title 
+    %%%(in column 2 of the lookup table)
+    dw(ind,pos_col) = D{1,2}(lookup_match,1);
+    end
+end
+
+%% Faculty Name %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% load the positions lookup table
+fid_fac = fopen('vivo_lookup_faculties.tsv','r');
+hdr_pos = fgetl(fid_fac);
+num_cols = length(regexp(hdr_pos,'\t'))+1;
+formatspec = repmat('%s',1,num_cols);
+D = textscan(fid_fac,formatspec,'Delimiter','\t');
+fclose(fid_fac);
+%for i = 1:1:num_cols
+%pos_list(:,i) = D{1,i}(:,1);
+%end
+
+fac_col = find(strcmp(headers,'Faculty')==1);
+
+%%% Find all unique strings; search for each unique string in the lookup
+%%% table. If it doesn't exist, make a note in the report. If it does
+%%% exist, replace the item with the proper text.
+unique_fac = unique(dw(:,fac_col));
+for i = 1:1:length(unique_fac)
+lookup_match = find(strcmp(D{1,1}(:,1),unique_fac{i,1})==1);
+    if isempty(lookup_match)==1
+    fprintf(fid_report,'%s\n','Positions to add to lookup table:')
+    fprintf(fid_report,'%s\n',unique_fac{i,1})
+    else
+    ind = find(strcmp(dw(:,fac_col),unique_fac{i,1})==1);
+    %%%substitute all positions of this type with the proper title 
+    %%%(in column 2 of the lookup table)
+    dw(ind,fac_col) = D{1,2}(lookup_match,1);
+    end
+end
 
 
 
-
-fclose(fid_report);
+ fclose(fid_report);
