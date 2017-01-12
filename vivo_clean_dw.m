@@ -139,7 +139,7 @@ lookup_match = find(strcmp(D{1,1}(:,1),unique_pos{i,1})==1);
 end
 
 %% Faculty Name %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% load the positions lookup table
+% load the faculties lookup table
 fid_fac = fopen('vivo_lookup_faculties.tsv','r');
 hdr_pos = fgetl(fid_fac);
 num_cols = length(regexp(hdr_pos,'\t'))+1;
@@ -159,7 +159,7 @@ unique_fac = unique(dw(:,fac_col));
 for i = 1:1:length(unique_fac)
 lookup_match = find(strcmp(D{1,1}(:,1),unique_fac{i,1})==1);
     if isempty(lookup_match)==1
-    fprintf(fid_report,'%s\n','Positions to add to lookup table:')
+    fprintf(fid_report,'%s\n','Faculties to add to lookup table:')
     fprintf(fid_report,'%s\n',unique_fac{i,1})
     else
     ind = find(strcmp(dw(:,fac_col),unique_fac{i,1})==1);
@@ -169,6 +169,83 @@ lookup_match = find(strcmp(D{1,1}(:,1),unique_fac{i,1})==1);
     end
 end
 
+%% Department Name %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% load the departments lookup table
+fid_dept = fopen('vivo_lookup_departments.tsv','r');
+hdr_pos = fgetl(fid_dept);
+num_cols = length(regexp(hdr_pos,'\t'))+1;
+formatspec = repmat('%s',1,num_cols);
+D = textscan(fid_dept,formatspec,'Delimiter','\t');
+fclose(fid_dept);
+%for i = 1:1:num_cols
+%pos_list(:,i) = D{1,i}(:,1);
+%end
+
+dept_col = find(strcmp(headers,'Department')==1);
+
+%%% Find all unique strings; search for each unique string in the lookup
+%%% table. If it doesn't exist, make a note in the report. If it does
+%%% exist, replace the item with the proper text.
+unique_dept = unique(dw(:,dept_col));
+for i = 1:1:length(unique_dept)
+lookup_match = find(strcmp(D{1,1}(:,1),unique_dept{i,1})==1);
+    if isempty(lookup_match)==1
+    fprintf(fid_report,'%s\n','Departments to add to lookup table:')
+    fprintf(fid_report,'%s\n',unique_dept{i,1})
+    else
+    ind = find(strcmp(dw(:,dept_col),unique_dept{i,1})==1);
+    %%%substitute all positions of this type with the proper title 
+    %%%(in column 2 of the lookup table)
+    dw(ind,dept_col) = D{1,2}(lookup_match,1);
+    end
+end
+
+%% replace the "Camp Building" column text with text generated from column 21 and the 
+%%% buildings lookup table. I think ultimately we'll want to replace these
+%%% items with the VIVO url for each building. 
+%%% Not all of these are entered yet into VIVO -- perhaps we could use the
+%%% lookup table itself to generate these items?
+% load the campus buildings lookup table
+fid_bldg = fopen('vivo_lookup_buildings.tsv','r');
+hdr_pos = fgetl(fid_bldg);
+num_cols = length(regexp(hdr_pos,'\t'))+1;
+formatspec = repmat('%s',1,num_cols);
+D = textscan(fid_bldg,formatspec,'Delimiter','\t');
+fclose(fid_bldg);
+%for i = 1:1:num_cols
+%pos_list(:,i) = D{1,i}(:,1);
+%end
+
+bldg_col = find(strcmp(headers,'Camp Building')==1);
+bldg_code_col = find(strcmp(headers,'Building Code')==1);
+
+for i = 1:1:size(dw,1)
+    tmp = dw{i,bldg_code_col};
+    ind_dash = strfind(tmp,'-');
+    if isempty(ind_dash)==1
+        continue;
+    else
+        bldg_code = tmp(1:ind_dash(1)-1);
+        room = tmp(ind_dash(1)+1:end);
+        ind = find(strcmp(D{1,1}(:,1),bldg_code)==1);
+        if isempty(ind)==1
+            continue
+        else
+            tmp2 = [D{1,2}{ind,1} ', Rm ' room ];
+            dw{i,bldg_col} = tmp2;
+        end
+    end
+end
 
 
- fclose(fid_report);
+%% Final Output:
+%%% Close the report:
+fclose(fid_report);
+
+fid_out = fopen('MCM_VIVO_ALL_FACULTY-46514-clean.tsv','w');
+tmp = sprintf('%s\t',headers{:});
+fprintf(fid_out,'%s\n',tmp);
+for i = 1:1:length(dw)
+fprintf(fid_out,'%s\n',sprintf('%s\t',dw{i,:}));
+end
+fclose(fid_out);
