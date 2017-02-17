@@ -1,8 +1,13 @@
+function [] = vivo_clean_dw(fname_in);
+
 %%% vivo_clean_dw.m
-% This script performs cleaning and data normalization procedured for
+% This function performs cleaning and data normalization procedured for
 % Mosaic DW data exports. 
 %%% Input: 
-% The required input is a tab-separated version of the data extract (no other changes made). 
+% The required input is a tab-separated version of the data extract (no other changes made).
+% This requires for the DW-created .xls sheet to be transformed to tsv.
+% The filename (as a string) is used as an input argument.
+% example: vivo_clean_dw('MCM_VIVO_ALL_FACULTY-46514.tsv');
 % The script also loads in tab-separated lookup table files for faculty
 % positions, departments, faculties and buildings.
 %%% Outputs: 
@@ -20,8 +25,11 @@ start_path = '/home/brodeujj/octave/VIVO';
 end
 cd(start_path);
 
+[pathstr,fname,ext] = fileparts(fname_in);
+
+
 %% Open the DW data export, read it and organize data into a cell array
-fid = fopen('MCM_VIVO_ALL_FACULTY-46514.tsv','r');
+fid = fopen(fname_in,'r');
 tline = fgetl(fid);
 numcols2 = length(regexp(tline,'\t'))+1;
 formatspec = repmat('%s',1,numcols2);
@@ -36,7 +44,7 @@ dw(:,i) = C{1,i}(2:end,1);
 end
 
 %%%Open a document so that we can track bad data:
-fid_report = fopen('MCM_VIVO_ALL_FACULTY-46514-datareport.txt','w');
+fid_report = fopen([fname '-datareport.txt'],'w');
 
 % Find columns for macid, first and last names:
 macid_col = find(strcmp(headers,'MAC ID')==1);
@@ -256,11 +264,10 @@ for i = 1:1:size(dw,1)
     end
 end
 
-
-%% Write the Final Output:
-
 %%% Close the report:
 fclose(fid_report);
+
+%% Write the Final Output:
 
 fid_out = fopen('MCM_VIVO_ALL_FACULTY-46514-clean.tsv','w');
 tmp = sprintf('%s\t',headers{:});
