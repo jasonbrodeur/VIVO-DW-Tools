@@ -1,0 +1,6 @@
+IDs requiring last name cleanup
+006010954
+001027083
+006015794
+Positions to add to lookup table:
+WORK/STUDY STUDENT

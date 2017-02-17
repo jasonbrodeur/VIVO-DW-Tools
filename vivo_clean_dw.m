@@ -43,8 +43,8 @@ headers{i,1} = C{1,i}{1,1};%{1,1};
 dw(:,i) = C{1,i}(2:end,1);
 end
 
-%%%Open a document so that we can track bad data:
-fid_report = fopen([fname '-datareport.txt'],'w');
+%%%Open a document so that we can track bad data. Mark it with a timestamp:
+fid_report = fopen([fname '-datareport_' datestr(now,30) '.txt'],'w');
 
 % Find columns for macid, first and last names:
 macid_col = find(strcmp(headers,'MAC ID')==1);
