@@ -269,7 +269,7 @@ fclose(fid_report);
 
 %% Write the Final Output:
 
-fid_out = fopen([fname '-clean.tsv','w');
+fid_out = fopen([fname '-clean.tsv'],'w');
 tmp = sprintf('%s\t',headers{:});
 fprintf(fid_out,'%s\n',tmp);
 for i = 1:1:length(dw)
