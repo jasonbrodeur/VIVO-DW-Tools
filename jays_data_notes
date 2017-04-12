@@ -1,0 +1,43 @@
+Data work to do:
+
+1) Additional Cleanup
+- Remove redundant entries in faculty sheet (e.g. Susan Robinson)
+-- look for matching strings for:
+--- Position title
+--- Faculty
+--- Department
+--- > idea: can we make a hash out of these three columns and then just compare hashes?
+-- if more than one match still remains:
+--- take the entry with mcmaster email
+--- take the first of the remaining entries
+- Think we can remove WORK/STUDY STUDENT entries
+
+2)  
+
+
+3) Potential issues:
+- Randall Jackson has two "Lecturer" appointments
+- Still lots of blanks in 'department' field -- are these getting dropped by the cleaning algorithm?
+-- I think we may need to change the script so that it just adds missing items to the lookup table
+
+4) Other questions:
+- Some departments seem to have a 'director' listed
+-- e.g. Ram Mishra is listed as the 'director'
+- or maybe all departments use this designation
+- take a look at Susan McCracken's entry -- duplicates but one lacks a Department designation
+
+- Alison McQueen -- listed as director of 'school of the arts', but also professor in History
+-- is School of the Arts something different than a department??
+-- no, I don't think so -- I think it's the same thing
+
+- People can have cross-appointments show up 
+-- e.g. Christopher Myhr is SoTA and CSMM
+-- 
+
+Lookup table for unit_type variable:
+1 = dept
+2 = inst
+3 = centre
+4 = admin
+5 = chair
+0 = other
