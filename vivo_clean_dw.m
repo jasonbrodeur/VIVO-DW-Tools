@@ -21,22 +21,35 @@ function [] = vivo_clean_dw(fname_in);
 if ispc==1
 start_path = 'D:/Local/VIVO-DW-Tools';
 else
-start_path = '/home/brodeujj/octave/VIVO';
+lut_path = '/home/brodeujj/Seafile/VIVO_Secure_Data/VIVO-DW-Tools/lookup_tables';
 end
-cd(start_path);
+cd(lut_path);
 
 [pathstr,fname,ext] = fileparts(fname_in);
 
 
 %% Open the DW data export, read it and organize data into a cell array
+%%fid = fopen(fname_in,'r');
+%%tline = fgetl(fid);
+%%%numcols2 = length(regexp(tline,'\t'))+1;
+%%numcols2 = length(regexp(tline,'"'))/2;
+%%%formatspec = repmat('%s',1,numcols2);
+%%%%C = textscan(fid,formatspec,'Delimiter',',');
+%%%C = textscan(fid,formatspec,'Delimiter',',','Whitespace','"');
+%%formatspec = repmat('%s',1,numcols2);
+%%%C = textscan(fid,formatspec,'Delimiter','","','MultipleDelimsAsOne',1);
+%%C = textscan(fid,formatspec,'Delimiter','",','MultipleDelimsAsOne',1);
+%%fclose(fid);
+
 fid = fopen(fname_in,'r');
 tline = fgetl(fid);
+frewind(fid);
 numcols2 = length(regexp(tline,'\t'))+1;
 formatspec = repmat('%s',1,numcols2);
 C = textscan(fid,formatspec,'Delimiter','\t');
 fclose(fid);
 
-%%% Extract headers
+%% Extract headers
 for i = 1:1:numcols2
 % headers{i,1} = C{1,i}(1,1){1,1};
 headers{i,1} = C{1,i}{1,1};%{1,1};
