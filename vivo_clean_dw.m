@@ -1,16 +1,16 @@
-function [] = vivo_clean_dw(fname_in);
+function [] = vivo_clean_dw(fname_in)
 
 %%% vivo_clean_dw.m
 % This function performs cleaning and data normalization procedured for
-% Mosaic DW data exports. 
-%%% Input: 
+% Mosaic DW data exports.
+%%% Input:
 % The required input is a tab-separated version of the data extract (no other changes made).
 % This requires for the DW-created .xls sheet to be transformed to tsv.
 % The filename (as a string) is used as an input argument.
 % example: vivo_clean_dw('MCM_VIVO_ALL_FACULTY-46514.tsv');
 % The script also loads in tab-separated lookup table files for faculty
 % positions, departments, faculties and buildings.
-%%% Outputs: 
+%%% Outputs:
 % The outputs include a 'cleaned' (ready-for-VIVO-integration) version of
 % the DW data, as well as a data processing report, which indicates
 % specific entries where an inconsistency has been found.
@@ -19,14 +19,23 @@ function [] = vivo_clean_dw(fname_in);
 
 %%% Set the starting path:
 if ispc==1
-start_path = 'D:/Local/VIVO-DW-Tools';
+    top_path = 'D:/Seafile/VIVO_Secure_Data/';
 else
-lut_path = '/home/brodeujj/Seafile/VIVO_Secure_Data/VIVO-DW-Tools/lookup_tables';
+    top_path = '/home/brodeujj/Seafile/VIVO_Secure_Data/';
 end
-cd(lut_path);
+lut_path = [top_path 'VIVO-DW-Tools/lookup_tables'];
+% lut_path = 'D:\Seafile\VIVO_Secure_Data\VIVO-DW-Tools\lookup_tables';
+load_path = [top_path '01_DW_Extracted'];
+output_path = [top_path '02_DW_Cleaned'];
+% else
+% lut_path = '/home/brodeujj/Seafile/VIVO_Secure_Data/VIVO-DW-Tools/lookup_tables';
+% end
+% cd(lut_path);
 
 [pathstr,fname,ext] = fileparts(fname_in);
-
+if isempty(pathstr)==1
+    pathstr = load_path;
+end
 
 %% Open the DW data export, read it and organize data into a cell array
 %%fid = fopen(fname_in,'r');
@@ -41,7 +50,7 @@ cd(lut_path);
 %%C = textscan(fid,formatspec,'Delimiter','",','MultipleDelimsAsOne',1);
 %%fclose(fid);
 
-fid = fopen(fname_in,'r');
+fid = fopen([pathstr '/' fname_in],'r');
 tline = fgetl(fid);
 frewind(fid);
 numcols2 = length(regexp(tline,'\t'))+1;
@@ -51,13 +60,13 @@ fclose(fid);
 
 %% Extract headers
 for i = 1:1:numcols2
-% headers{i,1} = C{1,i}(1,1){1,1};
-headers{i,1} = C{1,i}{1,1};%{1,1};
-dw(:,i) = C{1,i}(2:end,1);
+    % headers{i,1} = C{1,i}(1,1){1,1};
+    headers{i,1} = C{1,i}{1,1};%{1,1};
+    dw(:,i) = C{1,i}(2:end,1);
 end
 
 %%%Open a document so that we can track bad data. Mark it with a timestamp:
-fid_report = fopen([fname '-datareport_' datestr(now,30) '.txt'],'w');
+fid_report = fopen([output_path '/' fname '-datareport_' datestr(now,30) '.txt'],'w');
 
 % Find columns for macid, first and last names:
 macid_col = find(strcmp(headers,'MAC ID')==1);
@@ -68,12 +77,12 @@ lname_col = find(strcmp(headers,'LastName')==1);
 
 %%% MAC IDs to lowercase: %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for i = 1:1:length(dw(:,macid_col))
-tmp = lower(dw{i,macid_col});
-
-dw{i,macid_col}= tmp;
-
-%tmp2{i,1} = regexprep(tmp,'(\<[a-z])','${upper($1)}');
-%dw{i,fname_col} = regexprep(tmp,'(\<[a-z])','${upper($1)}')
+    tmp = lower(dw{i,macid_col});
+    
+    dw{i,macid_col}= tmp;
+    
+    %tmp2{i,1} = regexprep(tmp,'(\<[a-z])','${upper($1)}');
+    %dw{i,fname_col} = regexprep(tmp,'(\<[a-z])','${upper($1)}')
 end
 
 %%% First Names to Sentence case: %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -82,18 +91,47 @@ end
 %%% following a hyphen
 
 for i = 1:1:length(dw(:,fname_col))
-tmp = lower(dw{i,fname_col});
-to_upper = 1;
+    tmp = lower(dw{i,fname_col});
+    to_upper = 1;
+    %tmp2{i,1} = regexprep(tmp,'(\<[a-z])','${upper($1)}');
+    %dw{i,fname_col} = regexprep(tmp,'(\<[a-z])','${upper($1)}')
+    space = strfind(tmp, ' ');
+    if length(space)>0; to_upper= [to_upper; space'+1]; end
+    hyphen = strfind(tmp, '-');
+    if length(hyphen)>0; to_upper= [to_upper; hyphen'+1]; end
+    tmp(to_upper) = upper(tmp(to_upper));
+    dw{i,fname_col}= tmp;
+end
 
-space = strfind(tmp, ' '); 
-if length(space)>0; to_upper= [to_upper; space'+1]; end
-hyphen = strfind(tmp, '-');
-if length(hyphen)>0; to_upper= [to_upper; hyphen'+1]; end
-tmp(to_upper) = upper(tmp(to_upper));
-dw{i,fname_col}= tmp;
-
-%tmp2{i,1} = regexprep(tmp,'(\<[a-z])','${upper($1)}');
-%dw{i,fname_col} = regexprep(tmp,'(\<[a-z])','${upper($1)}')
+%%% Additional cleanup for first names
+fprintf(fid_report,'%s\n','IDs requiring last name cleanup')
+% extra space on either side of hyphen:
+extra_space = strfind(dw(:,fname_col),' - ');
+ind=find(cellfun('isempty',extra_space)==0);
+for i = 1:1:length(ind)
+    fprintf(fid_report,'%s\n',dw{ind(i),1})
+    dw{ind(i),fname_col} = strrep(dw{ind(i),fname_col},' - ','-');
+end
+% remove extra space on left side of hyphen:
+extra_space = strfind(dw(:,fname_col),'- ');
+ind=find(cellfun('isempty',extra_space)==0);
+for i = 1:1:length(ind)
+    fprintf(fid_report,'%s\n',dw{ind(i),1})
+    dw{ind(i),fname_col} = strrep(dw{ind(i),fname_col},'- ','-');
+end
+% remove extra space on right side of hyphen:
+extra_space = strfind(dw(:,fname_col),' -');
+ind=find(cellfun('isempty',extra_space)==0);
+for i = 1:1:length(ind)
+    fprintf(fid_report,'%s\n',dw{ind(i),1})
+    dw{ind(i),fname_col} = strrep(dw{ind(i),fname_col},' -','-');
+end
+% remove two spaces between names:
+extra_space = strfind(dw(:,fname_col),'  ');
+ind=find(cellfun('isempty',extra_space)==0);
+for i = 1:1:length(ind)
+    fprintf(fid_report,'%s\n',dw{ind(i),1})
+    dw{ind(i),fname_col} = strrep(dw{ind(i),fname_col},'  ',' ');
 end
 
 %%% Last Names to sentence case : %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -103,17 +141,17 @@ end
 %%% following 'MC' and 'MAC' at the start of a name
 
 for i = 1:1:length(dw(:,lname_col))
-tmp = lower(dw{i,lname_col});
-to_upper = 1;
-
-space = strfind(tmp, ' '); 
-if length(space)>0; to_upper= [to_upper; space'+1]; end
-hyphen = strfind(tmp, '-');
-if length(hyphen)>0; to_upper= [to_upper; hyphen'+1]; end
-if strncmp(tmp,'mc',2)==1; to_upper = [to_upper; 3];end
-if strncmp(tmp,'mac',3)==1; to_upper = [to_upper; 4];end
-tmp(to_upper) = upper(tmp(to_upper));
-dw{i,lname_col}= tmp;
+    tmp = lower(dw{i,lname_col});
+    to_upper = 1;
+    
+    space = strfind(tmp, ' ');
+    if length(space)>0; to_upper= [to_upper; space'+1]; end
+    hyphen = strfind(tmp, '-');
+    if length(hyphen)>0; to_upper= [to_upper; hyphen'+1]; end
+    if strncmp(tmp,'mc',2)==1; to_upper = [to_upper; 3];end
+    if strncmp(tmp,'mac',3)==1; to_upper = [to_upper; 4];end
+    tmp(to_upper) = upper(tmp(to_upper));
+    dw{i,lname_col}= tmp;
 end
 
 %%% Additional cleanup for last names
@@ -122,38 +160,55 @@ fprintf(fid_report,'%s\n','IDs requiring last name cleanup')
 extra_space = strfind(dw(:,4),' - ');
 ind=find(cellfun('isempty',extra_space)==0);
 for i = 1:1:length(ind)
-fprintf(fid_report,'%s\n',dw{ind(i),1})
-dw{ind(i),4} = strrep(dw{ind(i),4},' - ','-');
+    fprintf(fid_report,'%s\n',dw{ind(i),1})
+    dw{ind(i),4} = strrep(dw{ind(i),4},' - ','-');
 end
 % remove extra space on left side of hyphen:
 extra_space = strfind(dw(:,4),'- ');
 ind=find(cellfun('isempty',extra_space)==0);
 for i = 1:1:length(ind)
-fprintf(fid_report,'%s\n',dw{ind(i),1})
-dw{ind(i),4} = strrep(dw{ind(i),4},' - ','-');
+    fprintf(fid_report,'%s\n',dw{ind(i),1})
+    dw{ind(i),4} = strrep(dw{ind(i),4},'- ','-');
 end
 % remove extra space on right side of hyphen:
 extra_space = strfind(dw(:,4),' -');
 ind=find(cellfun('isempty',extra_space)==0);
 for i = 1:1:length(ind)
-fprintf(fid_report,'%s\n',dw{ind(i),1})
-dw{ind(i),4} = strrep(dw{ind(i),4},' - ','-');
+    fprintf(fid_report,'%s\n',dw{ind(i),1})
+    dw{ind(i),4} = strrep(dw{ind(i),4},' -','-');
 end
 % remove two spaces between names:
 extra_space = strfind(dw(:,4),'  ');
 ind=find(cellfun('isempty',extra_space)==0);
 for i = 1:1:length(ind)
-fprintf(fid_report,'%s\n',dw{ind(i),1})
-dw{ind(i),4} = strrep(dw{ind(i),4},' - ','-');
+    fprintf(fid_report,'%s\n',dw{ind(i),1})
+    dw{ind(i),4} = strrep(dw{ind(i),4},'  ',' ');
 end
+
+%%% Check for people with no MAC ID: %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ind = find(strcmp(dw(:,2),'-')==1 | strcmp(dw(:,2),'')==1);
+if size(ind,1)>0
+    fprintf(fid_report,'%s\n','IDs with no MAC IDs');
+    for i = 1:1:length(ind)
+        fprintf(fid_report,'%s\n',dw{ind(i),1})
+    end
+end
+
+
 
 %% Clean Position Titles -- use lookup table to perform find/replace %%%%%%%%%%%%%
 % load the positions lookup table
-fid_pos = fopen('vivo_lookup_positions.tsv','r');
+fid_pos = fopen([lut_path '/vivo_lookup_positions.tsv'],'r');
 hdr_pos = fgetl(fid_pos);
 num_cols = length(regexp(hdr_pos,'\t'))+1;
 formatspec = repmat('%s',1,num_cols);
+% D = strrep(D,'"','');
 D = textscan(fid_pos,formatspec,'Delimiter','\t');
+%%% Remove quotation marks (that Excel likes to do to 'help out'
+isString = cellfun('isclass', D{1,1}, 'char');
+D{1,1}(isString) = strrep(D{1,1}(isString), '"', '');
+isString = cellfun('isclass', D{1,2}, 'char');
+D{1,2}(isString) = strrep(D{1,2}(isString), '"', '');
 fclose(fid_pos);
 %for i = 1:1:num_cols
 %pos_list(:,i) = D{1,i}(:,1);
@@ -166,21 +221,21 @@ pos_col = find(strcmp(headers,'Position')==1);
 %%% exist, replace the item with the proper text.
 unique_pos = unique(dw(:,pos_col));
 for i = 1:1:length(unique_pos)
-lookup_match = find(strcmp(D{1,1}(:,1),unique_pos{i,1})==1);
+    lookup_match = find(strcmp(D{1,1}(:,1),unique_pos{i,1})==1);
     if isempty(lookup_match)==1
-    fprintf(fid_report,'%s\n','Positions to add to lookup table:')
-    fprintf(fid_report,'%s\n',unique_pos{i,1})
+        fprintf(fid_report,'%s\n','Positions to add to lookup table:')
+        fprintf(fid_report,'%s\n',unique_pos{i,1})
     else
-    ind = find(strcmp(dw(:,pos_col),unique_pos{i,1})==1);
-    %%%substitute all positions of this type with the proper title 
-    %%%(in column 2 of the lookup table)
-    dw(ind,pos_col) = D{1,2}(lookup_match,1);
+        ind = find(strcmp(dw(:,pos_col),unique_pos{i,1})==1);
+        %%%substitute all positions of this type with the proper title
+        %%%(in column 2 of the lookup table)
+        dw(ind,pos_col) = D{1,2}(lookup_match,1);
     end
 end
 
 %% Faculty Name - lookup table replace %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % load the faculties lookup table
-fid_fac = fopen('vivo_lookup_faculties.tsv','r');
+fid_fac = fopen([lut_path '/vivo_lookup_faculties.tsv'],'r');
 hdr_pos = fgetl(fid_fac);
 num_cols = length(regexp(hdr_pos,'\t'))+1;
 formatspec = repmat('%s',1,num_cols);
@@ -197,21 +252,21 @@ fac_col = find(strcmp(headers,'Faculty')==1);
 %%% exist, replace the item with the proper text.
 unique_fac = unique(dw(:,fac_col));
 for i = 1:1:length(unique_fac)
-lookup_match = find(strcmp(D{1,1}(:,1),unique_fac{i,1})==1);
+    lookup_match = find(strcmp(D{1,1}(:,1),unique_fac{i,1})==1);
     if isempty(lookup_match)==1
-    fprintf(fid_report,'%s\n','Faculties to add to lookup table:')
-    fprintf(fid_report,'%s\n',unique_fac{i,1})
+        fprintf(fid_report,'%s\n','Faculties to add to lookup table:')
+        fprintf(fid_report,'%s\n',unique_fac{i,1})
     else
-    ind = find(strcmp(dw(:,fac_col),unique_fac{i,1})==1);
-    %%%substitute all positions of this type with the proper title 
-    %%%(in column 2 of the lookup table)
-    dw(ind,fac_col) = D{1,2}(lookup_match,1);
+        ind = find(strcmp(dw(:,fac_col),unique_fac{i,1})==1);
+        %%%substitute all positions of this type with the proper title
+        %%%(in column 2 of the lookup table)
+        dw(ind,fac_col) = D{1,2}(lookup_match,1);
     end
 end
 
 %% Department Name - lookup table replace %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % load the departments lookup table
-fid_dept = fopen('vivo_lookup_departments.tsv','r');
+fid_dept = fopen([lut_path '/vivo_lookup_departments.tsv'],'r');
 hdr_pos = fgetl(fid_dept);
 num_cols = length(regexp(hdr_pos,'\t'))+1;
 formatspec = repmat('%s',1,num_cols);
@@ -228,25 +283,25 @@ dept_col = find(strcmp(headers,'Department')==1);
 %%% exist, replace the item with the proper text.
 unique_dept = unique(dw(:,dept_col));
 for i = 1:1:length(unique_dept)
-lookup_match = find(strcmp(D{1,1}(:,1),unique_dept{i,1})==1);
+    lookup_match = find(strcmp(D{1,1}(:,1),unique_dept{i,1})==1);
     if isempty(lookup_match)==1
-    fprintf(fid_report,'%s\n','Departments to add to lookup table:')
-    fprintf(fid_report,'%s\n',unique_dept{i,1})
+        fprintf(fid_report,'%s\n','Departments to add to lookup table:')
+        fprintf(fid_report,'%s\n',unique_dept{i,1})
     else
-    ind = find(strcmp(dw(:,dept_col),unique_dept{i,1})==1);
-    %%%substitute all positions of this type with the proper title 
-    %%%(in column 2 of the lookup table)
-    dw(ind,dept_col) = D{1,2}(lookup_match,1);
+        ind = find(strcmp(dw(:,dept_col),unique_dept{i,1})==1);
+        %%%substitute all positions of this type with the proper title
+        %%%(in column 2 of the lookup table)
+        dw(ind,dept_col) = D{1,2}(lookup_match,1);
     end
 end
 
-%% replace the "Camp Building" column text with text generated from column 21 and the 
+%% replace the "Camp Building" column text with text generated from column 21 and the
 %%% buildings lookup table. I think ultimately we'll want to replace these
-%%% items with the VIVO url for each building. 
+%%% items with the VIVO url for each building.
 %%% Not all of these are entered yet into VIVO -- perhaps we could use the
 %%% lookup table itself to generate these items?
 % load the campus buildings lookup table
-fid_bldg = fopen('vivo_lookup_buildings.tsv','r');
+fid_bldg = fopen([lut_path '/vivo_lookup_buildings.tsv'],'r');
 hdr_pos = fgetl(fid_bldg);
 num_cols = length(regexp(hdr_pos,'\t'))+1;
 formatspec = repmat('%s',1,num_cols);
@@ -282,10 +337,10 @@ fclose(fid_report);
 
 %% Write the Final Output:
 
-fid_out = fopen([fname '-clean.tsv'],'w');
+fid_out = fopen([output_path '/' fname '-clean.tsv'],'w');
 tmp = sprintf('%s\t',headers{:});
 fprintf(fid_out,'%s\n',tmp);
 for i = 1:1:length(dw)
-fprintf(fid_out,'%s\n',sprintf('%s\t',dw{i,:}));
+    fprintf(fid_out,'%s\n',sprintf('%s\t',dw{i,:}));
 end
 fclose(fid_out);

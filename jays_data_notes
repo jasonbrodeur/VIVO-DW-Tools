@@ -1,3 +1,14 @@
+Update (20170420)
+A first draft of the HR data file to review can be found in the file VIVO_Secure_Data/03_Processed_For_Elements/Elements_HR.csv
+- The 36 individuals who do not have a clear primary appointment.
+- The lack of Title, Known As, etc. etc.
+- There may be errors with selecting the primary position for individuals, and this is going to be difficult to figure out unless people go through the data closely.
+- A number of people in the data warehouse feed don't have MAC IDs -- I have a list of the individuals, and we'll need to think about how to deal with this moving forward.
+- It's unclear how we might be able to add second, third, etc. appointments to the HR data feed. I'll inquire with the symplectic folks on this point tomorrow. 
+- Still a bit of inconsistency with the Position titles -- FHS uses "xxxx xxxx (Adjunct)" while other faculties use "Adjunct xxxx xxxx". 
+
+
+
 Data work to do:
 
 1) Additional Cleanup
@@ -32,7 +43,7 @@ Data work to do:
 
 - People can have cross-appointments show up 
 -- e.g. Christopher Myhr is SoTA and CSMM
--- 
+-- e.g. Lori Campbell is Associate Professor in Sociology and Health, Aging & Society (indestinguishable)
 
 Lookup table for unit_type variable:
 1 = dept
