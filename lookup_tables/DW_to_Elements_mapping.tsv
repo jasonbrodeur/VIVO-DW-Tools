@@ -1,25 +1,25 @@
 Elements_fieldname	DW_fieldname
-[Title]	
-[Initials]	
+[Title]	Prefix
+[Initials]	Initials
 [Firstname]	FirstName
 [Lastname]	LastName
-[KnownAs]	
-[Suffix]	
+[KnownAs]	KnownAs
+[Suffix]	Suffix
 [Email]	Email addr
 [AuthenticatingAuthority]	<ADS>
 [Username]	MAC ID
 [Proprietary_ID]	ID
 [PrimaryGroupDescriptor]	Faculty
-[Generic01]	
-[Generic02]	
-[Generic03]	
-[Generic04]	
-[Generic05]	
-[Generic06]	
-[Generic07]	
-[Generic08]	
-[Generic09]	
-[Generic10]	
+[Generic01]	secpos1
+[Generic02]	secdept1
+[Generic03]	secpos2
+[Generic04]	secdept2
+[Generic05]	secpos3
+[Generic06]	secdept3
+[Generic07]	secpos4
+[Generic08]	secdept4
+[Generic09]	secpos5
+[Generic10]	secdept5
 [Generic11]	
 [Generic12]	
 [Generic13]	

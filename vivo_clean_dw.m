@@ -1,5 +1,5 @@
 function [] = vivo_clean_dw(fname_in)
-
+% fname_in = 'MCM_VIVO_ALL_FACULTY-62847.csv';
 %%% vivo_clean_dw.m
 % This function performs cleaning and data normalization procedured for
 % Mosaic DW data exports.
@@ -50,13 +50,34 @@ end
 %%C = textscan(fid,formatspec,'Delimiter','",','MultipleDelimsAsOne',1);
 %%fclose(fid);
 
+%%% Figure out if we're loading a tsv or csv file:
 fid = fopen([pathstr '/' fname_in],'r');
 tline = fgetl(fid);
 frewind(fid);
-numcols2 = length(regexp(tline,'\t'))+1;
-formatspec = repmat('%s',1,numcols2);
-C = textscan(fid,formatspec,'Delimiter','\t');
-fclose(fid);
+switch ext
+    case '.tsv'
+        numcols2 = length(regexp(tline,'\t'))+1;
+        formatspec = repmat('%s',1,numcols2);
+        C = textscan(fid,formatspec,'Delimiter','\t');
+        fclose(fid);
+    case '.csv'
+        numcols2 = length(regexp(tline,','))+1;
+        formatspec = repmat('%q',1,numcols2);
+        C = textscan(fid,formatspec,'Delimiter',',');
+        fclose(fid);
+    otherwise
+        disp('extension not recognized (looking for .csv or .tsv). Check that you have the correct file selected and that it''s using the correct delimeter. Rename if necessary.');
+        return;
+end 
+
+
+% fid = fopen([pathstr '/' fname_in],'r');
+% tline = fgetl(fid);
+% frewind(fid);
+% numcols2 = length(regexp(tline,'\t'))+1;
+% formatspec = repmat('%s',1,numcols2);
+% C = textscan(fid,formatspec,'Delimiter','\t');
+% fclose(fid);
 
 %% Extract headers
 for i = 1:1:numcols2
@@ -72,8 +93,51 @@ fid_report = fopen([output_path '/' fname '-datareport_' datestr(now,30) '.txt']
 macid_col = find(strcmp(headers,'MAC ID')==1);
 fname_col = find(strcmp(headers,'FirstName')==1);
 lname_col = find(strcmp(headers,'LastName')==1);
+mname_col = find(strcmp(headers,'Middle Name')==1);
+if isempty(mname_col)
+    mname_col = find(strcmp(headers,'MiddleName')==1);
+end
+prefix_col = find(strcmp(headers,'Prefix')==1);
+initials_col = find(strcmp(headers,'Initials')==1); 
+knownas_col = find(strcmp(headers,'KnownAs')==1);
+if isempty(knownas_col)
+   dw = [dw cell(length(dw),1)];   knownas_col = size(dw,2);   headers{knownas_col,1}='KnownAs';
+end
+suffix_col = find(strcmp(headers,'Suffix')==1);
+if isempty(suffix_col)
+   dw = [dw cell(length(dw),1)];   suffix_col = size(dw,2);   headers{suffix_col,1}='Suffix';
+end
 
-%% Task 1: Put First and Last Names into Sentence Case; macIDs into lower case
+%% Task 0: Open up a manually-maintained lookup table that will do corrections that are currently not programmed into this function:
+%%% Structure of the name correction file:
+% col1 = macid; col2 = old fname; col3 = old mname; col4 = old lname;
+% col5 = new fname; col6 = new mname; col7 = new lname;
+fprintf(fid_report,'%s\n','IDs requiring first name / middle name / last name cleanup:')
+
+[fid_fixes, errmsg] = fopen([lut_path '/name_corrections.tsv'],'r');
+tline = fgetl(fid_fixes);
+numcols = length(regexp(tline,'\t'))+1;
+        formatspec = repmat('%s',1,numcols);
+        D = textscan(fid_fixes,formatspec,'Delimiter','\t');
+        % Remove quotation marks.
+        for pp = 1:1:size(D,2)
+        isString = cellfun('isclass', D{1,pp}, 'char');
+        D{1,pp}(isString) = strrep(D{1,pp}(isString), '"', '');
+        end
+fclose(fid_fixes);   
+for t = 1:1:size(D{1,1},1)
+   ind_repl = find(strcmp(D{1,1}{t,1},dw(:,macid_col))==1); 
+      for t2 = 1:1:length(ind_repl)
+      dw{ind_repl(t2),fname_col} = D{1,5}{t,1};
+      dw{ind_repl(t2),mname_col} = D{1,6}{t,1};
+      dw{ind_repl(t2),lname_col} = D{1,7}{t,1};
+      end
+      fprintf(fid_report,'%s\n',dw{ind_repl(1),1});
+end
+
+clear D;        
+        
+%% Task 1: Put First, Middle, and Last Names + Prefix into Sentence Case; macIDs into lower case;
 
 %%% MAC IDs to lowercase: %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for i = 1:1:length(dw(:,macid_col))
@@ -85,26 +149,31 @@ for i = 1:1:length(dw(:,macid_col))
     %dw{i,fname_col} = regexprep(tmp,'(\<[a-z])','${upper($1)}')
 end
 
-%%% First Names to Sentence case: %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Check for people with no MAC ID: %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ind = find(strcmp(dw(:,macid_col),'-')==1 | strcmp(dw(:,macid_col),'')==1);
+if size(ind,1)>0
+    fprintf(fid_report,'%s\n','IDs with no MAC IDs');
+    for i = 1:1:length(ind)
+        fprintf(fid_report,'%s\n',dw{ind(i),1})
+    end
+end
+
+%% First Names to Sentence case: %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Exceptions for capitalization
 %%% following a space
 %%% following a hyphen
 
-for i = 1:1:length(dw(:,fname_col))
-    tmp = lower(dw{i,fname_col});
-    to_upper = 1;
-    %tmp2{i,1} = regexprep(tmp,'(\<[a-z])','${upper($1)}');
-    %dw{i,fname_col} = regexprep(tmp,'(\<[a-z])','${upper($1)}')
-    space = strfind(tmp, ' ');
-    if length(space)>0; to_upper= [to_upper; space'+1]; end
-    hyphen = strfind(tmp, '-');
-    if length(hyphen)>0; to_upper= [to_upper; hyphen'+1]; end
-    tmp(to_upper) = upper(tmp(to_upper));
-    dw{i,fname_col}= tmp;
+%%% Cleanup for first names
+fprintf(fid_report,'%s\n','IDs requiring first name cleanup:')
+
+% period to space:
+period = strfind(dw(:,fname_col),'.');
+ind=find(cellfun('isempty',period)==0);
+for i = 1:1:length(ind)
+    fprintf(fid_report,'%s\n',[dw{ind(i),1} ' - remove period'])
+    dw{ind(i),fname_col} = strrep(dw{ind(i),fname_col},'.',' ');
 end
 
-%%% Additional cleanup for first names
-fprintf(fid_report,'%s\n','IDs requiring last name cleanup')
 % extra space on either side of hyphen:
 extra_space = strfind(dw(:,fname_col),' - ');
 ind=find(cellfun('isempty',extra_space)==0);
@@ -134,16 +203,179 @@ for i = 1:1:length(ind)
     dw{ind(i),fname_col} = strrep(dw{ind(i),fname_col},'  ',' ');
 end
 
-%%% Last Names to sentence case : %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% Flag any first name with a hyphen for later:
+hyphens = strfind(dw(:,fname_col),'-');
+ind_hyphen=find(cellfun('isempty',hyphens)==0);
+
+%%% To sentence case:
+ind_mncheck = [];
+suffixes = {' jr' 'Jr';' sr' 'Sr'; ' iii' 'III'; ' iv' 'IV'};
+for i = 1:1:length(dw(:,fname_col))
+    tmp = lower(dw{i,fname_col});
+    to_upper = 1;
+    
+    %%% Pull out "KnownAs" from the first name (assuming that parentheses are used to indicate this).
+    paren = strfind(tmp,'(');
+    if ~isempty(paren) 
+       paren_end = strfind(tmp,')');
+       if isempty(paren_end);
+           if strcmp(tmp(end),' ')==1; 
+               dw{i,knownas_col} = tmp(paren+1:paren_end-1);
+           else
+               dw{i,knownas_col} = tmp(paren+1:paren_end);
+           end
+       else
+           dw{i,knownas_col} = tmp(paren+1:paren_end-1);
+       end
+       tmp = tmp(1:paren-1);
+    end
+    
+    %%% Pull out Suffixes - write them to the "Suffix" field. Remove them
+    %%% from the first name.
+    for sfx_ctr = 1:1:size(suffixes,1)
+       if ~isempty(strfind(tmp,suffixes{sfx_ctr,1}))
+           ind_sfx = strfind(tmp,suffixes{sfx_ctr,1});
+          dw{i,suffix_col} = suffixes{sfx_ctr,2};% tmp(ind_sfx+1:ind_sfx+length(suffixes{sfx_ctr})-1);          
+           tmp = tmp(1:ind_sfx-1);
+       else
+       end
+    end
+   
+    % Remove any trailing white space. 
+    if strcmp(tmp(end),' ')==1; tmp = tmp(1:end-1); end 
+  
+    % Capitalize after a space
+    space = strfind(tmp, ' ');
+    if length(space)>0; 
+        to_upper= [to_upper; space'+1]; 
+        %%% Also, flag this row for review, to see if the middle name might
+        %%% be included in with the first name;
+        ind_mncheck = [ind_mncheck; i];
+    end 
+    
+    % Capitalize after a hyphen
+    hyphen = strfind(tmp, '-');
+    if length(hyphen)>0; to_upper= [to_upper; hyphen'+1]; end 
+    tmp(to_upper) = upper(tmp(to_upper));
+    dw{i,fname_col}= tmp;
+end
+
+
+%% Middle Names to sentence case : %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% To sentence case
+% remove periods (turn '.' into ' ')
+% remove spaces around hyphens
+% ensure a single space between different words (turn '  ' into ' ')
+
+fprintf(fid_report,'%s\n','IDs requiring middle name cleanup:')
+
+% period to space:
+period = strfind(dw(:,mname_col),'.');
+ind=find(cellfun('isempty',period)==0);
+for i = 1:1:length(ind)
+    fprintf(fid_report,'%s\n',[dw{ind(i),1} ' - remove period'])
+    dw{ind(i),mname_col} = strrep(dw{ind(i),mname_col},'.',' ');
+end
+
+% extra space on either side of hyphen:
+extra_space = strfind(dw(:,mname_col),' - ');
+ind=find(cellfun('isempty',extra_space)==0);
+for i = 1:1:length(ind)
+    fprintf(fid_report,'%s\n',[dw{ind(i),1} ' - remove spaces around hyphen.'])
+    dw{ind(i),mname_col} = strrep(dw{ind(i),mname_col},' - ','-');
+end
+
+% remove extra space on left side of hyphen:
+extra_space = strfind(dw(:,mname_col),'- ');
+ind=find(cellfun('isempty',extra_space)==0);
+for i = 1:1:length(ind)
+    fprintf(fid_report,'%s\n',[dw{ind(i),1} ' - remove spaces around hyphen.'])
+    dw{ind(i),mname_col} = strrep(dw{ind(i),mname_col},'- ','-');
+end
+
+% remove extra space on right side of hyphen:
+extra_space = strfind(dw(:,mname_col),' -');
+ind=find(cellfun('isempty',extra_space)==0);
+for i = 1:1:length(ind)
+    fprintf(fid_report,'%s\n',[dw{ind(i),1} ' - remove spaces around hyphen.'])
+    dw{ind(i),mname_col} = strrep(dw{ind(i),mname_col},' -','-');
+end
+% remove two spaces between names:
+extra_space = strfind(dw(:,mname_col),'  ');
+ind=find(cellfun('isempty',extra_space)==0);
+for i = 1:1:length(ind)
+    fprintf(fid_report,'%s\n',[dw{ind(i),1} ' - remove extra blank space'])
+    dw{ind(i),mname_col} = strrep(dw{ind(i),mname_col},'  ',' ');
+end
+
+%%% To sentence case:
+for i = 1:1:length(dw(:,mname_col))
+    tmp = lower(dw{i,mname_col});
+    if isempty(tmp)==1; continue; end;
+    to_upper = 1;
+    %tmp2{i,1} = regexprep(tmp,'(\<[a-z])','${upper($1)}');
+    %dw{i,fname_col} = regexprep(tmp,'(\<[a-z])','${upper($1)}')
+    % Remove any trailing white space. 
+    if strcmp(tmp(end),' ')==1; tmp = tmp(1:end-1); end 
+    
+    % Capitalize after a space
+    space = strfind(tmp, ' ');
+    if length(space)>0; 
+        to_upper= [to_upper; space'+1]; 
+    end 
+    
+    % Capitalize after a hyphen
+    hyphen = strfind(tmp, '-');
+    if length(hyphen)>0; to_upper= [to_upper; hyphen'+1]; end 
+    
+    tmp(to_upper) = upper(tmp(to_upper));
+    
+    dw{i,mname_col}= tmp;
+end
+%% Last Names to sentence case : %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Exceptions for capitalization
 %%% following a space
 %%% following a hyphen
 %%% following 'MC' and 'MAC' at the start of a name
 
+%%% Additional cleanup for last names
+fprintf(fid_report,'%s\n','IDs requiring last name cleanup')
+
+% extra space on either side of hyphen:
+extra_space = strfind(dw(:,lname_col),' - ');
+ind=find(cellfun('isempty',extra_space)==0);
+for i = 1:1:length(ind)
+    fprintf(fid_report,'%s\n',dw{ind(i),1})
+    dw{ind(i),lname_col} = strrep(dw{ind(i),lname_col},' - ','-');
+end
+% remove extra space on left side of hyphen:
+extra_space = strfind(dw(:,lname_col),'- ');
+ind=find(cellfun('isempty',extra_space)==0);
+for i = 1:1:length(ind)
+    fprintf(fid_report,'%s\n',dw{ind(i),1})
+    dw{ind(i),lname_col} = strrep(dw{ind(i),lname_col},'- ','-');
+end
+% remove extra space on right side of hyphen:
+extra_space = strfind(dw(:,lname_col),' -');
+ind=find(cellfun('isempty',extra_space)==0);
+for i = 1:1:length(ind)
+    fprintf(fid_report,'%s\n',dw{ind(i),1})
+    dw{ind(i),lname_col} = strrep(dw{ind(i),lname_col},' -','-');
+end
+% remove two spaces between names:
+extra_space = strfind(dw(:,lname_col),'  ');
+ind=find(cellfun('isempty',extra_space)==0);
+for i = 1:1:length(ind)
+    fprintf(fid_report,'%s\n',dw{ind(i),1})
+    dw{ind(i),lname_col} = strrep(dw{ind(i),lname_col},'  ',' ');
+end
+
+%%% To sentence case:
 for i = 1:1:length(dw(:,lname_col))
     tmp = lower(dw{i,lname_col});
     to_upper = 1;
-    
+    if strcmp(tmp(end),' ')==1; tmp = tmp(1:end-1); end % Remove any trailing white space.
     space = strfind(tmp, ' ');
     if length(space)>0; to_upper= [to_upper; space'+1]; end
     hyphen = strfind(tmp, '-');
@@ -154,47 +386,84 @@ for i = 1:1:length(dw(:,lname_col))
     dw{i,lname_col}= tmp;
 end
 
-%%% Additional cleanup for last names
-fprintf(fid_report,'%s\n','IDs requiring last name cleanup')
-% extra space on either side of hyphen:
-extra_space = strfind(dw(:,4),' - ');
-ind=find(cellfun('isempty',extra_space)==0);
-for i = 1:1:length(ind)
-    fprintf(fid_report,'%s\n',dw{ind(i),1})
-    dw{ind(i),4} = strrep(dw{ind(i),4},' - ','-');
-end
-% remove extra space on left side of hyphen:
-extra_space = strfind(dw(:,4),'- ');
-ind=find(cellfun('isempty',extra_space)==0);
-for i = 1:1:length(ind)
-    fprintf(fid_report,'%s\n',dw{ind(i),1})
-    dw{ind(i),4} = strrep(dw{ind(i),4},'- ','-');
-end
-% remove extra space on right side of hyphen:
-extra_space = strfind(dw(:,4),' -');
-ind=find(cellfun('isempty',extra_space)==0);
-for i = 1:1:length(ind)
-    fprintf(fid_report,'%s\n',dw{ind(i),1})
-    dw{ind(i),4} = strrep(dw{ind(i),4},' -','-');
-end
-% remove two spaces between names:
-extra_space = strfind(dw(:,4),'  ');
-ind=find(cellfun('isempty',extra_space)==0);
-for i = 1:1:length(ind)
-    fprintf(fid_report,'%s\n',dw{ind(i),1})
-    dw{ind(i),4} = strrep(dw{ind(i),4},'  ',' ');
-end
-
-%%% Check for people with no MAC ID: %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-ind = find(strcmp(dw(:,2),'-')==1 | strcmp(dw(:,2),'')==1);
-if size(ind,1)>0
-    fprintf(fid_report,'%s\n','IDs with no MAC IDs');
-    for i = 1:1:length(ind)
-        fprintf(fid_report,'%s\n',dw{ind(i),1})
+%% KnownAs to Sentence Case: 
+for i = 1:1:length(dw(:,knownas_col))
+    tmp = lower(dw{i,knownas_col});
+    if ~isempty(tmp)
+    to_upper = 1;
+     % Remove any trailing white space. 
+    if strcmp(tmp(end),' ')==1; tmp = tmp(1:end-1); end 
+    space = strfind(tmp, ' ');
+    if length(space)>0; to_upper= [to_upper; space'+1]; end
+    hyphen = strfind(tmp, '-');
+    if length(hyphen)>0; to_upper= [to_upper; hyphen'+1]; end
+    tmp(to_upper) = upper(tmp(to_upper));
+    dw{i,knownas_col}= tmp;
     end
 end
 
+%% Prefix to Sentence Case
+%%% & Remove any spaces:
 
+for i = 1:1:length(dw(:,prefix_col))
+    dw{i,prefix_col} = strrep(dw{i,prefix_col},' ','');
+    tmp = lower(dw{i,prefix_col});
+    if isempty(tmp)
+        tmp = '';
+    else
+        tmp(1) = upper(tmp(1));
+        if strcmpi(tmp,'Miss')~=1
+            %         tmp = [tmp '.'];
+            tmp(end+1) = '.';
+        end
+    end
+    dw{i,prefix_col} = tmp;
+end
+
+%% Generate Initials
+for i = 1:1:length(dw(:,initials_col))
+    tmp_fname = dw{i,fname_col};
+    tmp_fname_space = strrep(tmp_fname,'-',' ');
+
+    tmp_inits = '';
+    %%% Process the first name first: 
+    tmp_inits(1) = tmp_fname(1);
+    spaces = strfind(tmp_fname_space,' ');
+    for spc_ctr = 1:1:length(spaces)
+        switch tmp_fname(spaces(spc_ctr))
+            case ' '
+                tmp_inits = [tmp_inits tmp_fname(spaces(spc_ctr)+1)];
+            case '-'
+                tmp_inits = [tmp_inits '-' tmp_fname(spaces(spc_ctr)+1)];
+        end
+    end
+    
+    %%% Add initials from middle name only if not flagged as multiple-name
+    %%% first names
+    tmp_mname = dw{i,mname_col};
+    if sum(i == ind_mncheck)==0 && ~isempty(tmp_mname) % if it's a person NOT with two first names
+        tmp_mname_space = strrep(tmp_mname,'-',' ');
+        tmp_inits = [tmp_inits tmp_mname(1)];
+        
+        spaces = strfind(tmp_mname_space,' ');
+        for spc_ctr = 1:1:length(spaces)
+            switch tmp_mname(spaces(spc_ctr))
+                case ' '
+                    tmp_inits = [tmp_inits tmp_mname(spaces(spc_ctr)+1)];
+                case '-'
+                    tmp_inits = [tmp_inits '-' tmp_mname(spaces(spc_ctr)+1)];
+            end
+        end
+        
+    end
+dw{i,initials_col} = tmp_inits;
+end
+%%
+% %% Identify potential cases where middle names have been included in the first name field, and need to be broken apart.
+% %%% Test 1--Looking for two or more first names was accomplished in an earlier loop.
+% tmp_dw = dw(ind_mncheck,:);
+% 
+% 
 
 %% Clean Position Titles -- use lookup table to perform find/replace %%%%%%%%%%%%%
 % load the positions lookup table
@@ -204,7 +473,7 @@ num_cols = length(regexp(hdr_pos,'\t'))+1;
 formatspec = repmat('%s',1,num_cols);
 % D = strrep(D,'"','');
 D = textscan(fid_pos,formatspec,'Delimiter','\t');
-%%% Remove quotation marks (that Excel likes to do to 'help out'
+%%% Remove quotation marks (that Excel likes to do to 'help out')
 isString = cellfun('isclass', D{1,1}, 'char');
 D{1,1}(isString) = strrep(D{1,1}(isString), '"', '');
 isString = cellfun('isclass', D{1,2}, 'char');
