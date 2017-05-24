@@ -4,10 +4,9 @@ function [] = vivo_clean_dw(fname_in)
 % This function performs cleaning and data normalization procedured for
 % Mosaic DW data exports.
 %%% Input:
-% The required input is a tab-separated version of the data extract (no other changes made).
-% This requires for the DW-created .xls sheet to be transformed to tsv.
+% The required input is a comma-separated version of the data extract.
 % The filename (as a string) is used as an input argument.
-% example: vivo_clean_dw('MCM_VIVO_ALL_FACULTY-46514.tsv');
+% example: vivo_clean_dw('MCM_VIVO_ALL_FACULTY-46514.csv');
 % The script also loads in tab-separated lookup table files for faculty
 % positions, departments, faculties and buildings.
 %%% Outputs:
@@ -19,19 +18,22 @@ function [] = vivo_clean_dw(fname_in)
 
 %%% Set the starting path:
 if ispc==1
+    if exist('D:/Seafile/VIVO_Secure_Data/','folder')==7
     top_path = 'D:/Seafile/VIVO_Secure_Data/';
+    elseif exist('X:/xxx/xxx','folder')==7      % Gabriela, you can add in your path here
+    top_path = 'X:/xxx/xxx';                    % Gabriela, you can add in your path here
+    else
+        disp('Starting path not assigned. See line ~20 Exiting'); return;
+    end
 else
     top_path = '/home/brodeujj/Seafile/VIVO_Secure_Data/';
 end
-lut_path = [top_path 'VIVO-DW-Tools/lookup_tables'];
-% lut_path = 'D:\Seafile\VIVO_Secure_Data\VIVO-DW-Tools\lookup_tables';
-load_path = [top_path '01_DW_Extracted'];
-output_path = [top_path '02_DW_Cleaned'];
-% else
-% lut_path = '/home/brodeujj/Seafile/VIVO_Secure_Data/VIVO-DW-Tools/lookup_tables';
-% end
-% cd(lut_path);
+lut_path = [top_path 'VIVO-DW-Tools/lookup_tables']; % lookup table path
+load_path = [top_path '01_DW_Extracted']; % location of 'raw' data file
+output_path = [top_path '02_DW_Cleaned']; % location of 'raw' data file
 
+
+% Separate filename into differnt parts:
 [pathstr,fname,ext] = fileparts(fname_in);
 if isempty(pathstr)==1
     pathstr = load_path;

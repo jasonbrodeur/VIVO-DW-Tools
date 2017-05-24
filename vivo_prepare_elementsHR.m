@@ -1,19 +1,36 @@
 function [] = vivo_prepare_elementsHR(fname_in)
 % fname_in = 'MCM_VIVO_ALL_FACULTY-62847-clean.tsv';
-% % fname_in = 'MCM_VIVO_ALL_FACULTY-62847.csv';
 
-%%% Required operations:
-% - identify primary positions
-% - create
+%%% vivo_prepare_elementsHR.m
+% This function loads cleaned DW extracted data (produced using vivo_clean_dw.m), and prepares the ready-for-Elements import file.
+
+%%% Input:
+% The required input is a tab-separated version of the cleaned DW data .
+% The script also loads in tab-separated lookup table files for faculty
+% positions, departments, faculties and buildings.
+% The function also loads in a list of non-faculty users, to be integrated into the HR file.
+%%% Outputs:
+% The outputs include a ready-for-Elements-import version of the HR data
+%
+% Created February 2017 by JJB.
+
+% Set path depending on whether PC or linux:
 if ispc==1
+    if exist('D:/Seafile/VIVO_Secure_Data/','folder')==7
     top_path = 'D:/Seafile/VIVO_Secure_Data/';
+    elseif exist('X:/xxx/xxx','folder')==7      % Gabriela, you can add in your path here
+    top_path = 'X:/xxx/xxx';                    % Gabriela, you can add in your path here
+    else
+        disp('Starting path not assigned. See line ~20 Exiting'); return;
+    end
 else
     top_path = '/home/brodeujj/Seafile/VIVO_Secure_Data/';
 end
-lut_path = [top_path 'VIVO-DW-Tools/lookup_tables'];
-load_path = [top_path '02_DW_Cleaned'];
-output_path = [top_path '03_Processed_For_Elements'];
-nonfac_path = [top_path '02_NonFacultyUsers'];
+
+lut_path = [top_path 'VIVO-DW-Tools/lookup_tables']; % lookup table path
+load_path = [top_path '02_DW_Cleaned']; % cleaned data path
+output_path = [top_path '03_Processed_For_Elements']; % output path
+nonfac_path = [top_path '02_NonFacultyUsers']; % location of non-faculty-users list
 
 %% Load additional files
 %%% Load the positions lookup table
