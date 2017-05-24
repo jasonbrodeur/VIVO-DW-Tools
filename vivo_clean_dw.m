@@ -32,7 +32,6 @@ lut_path = [top_path 'VIVO-DW-Tools/lookup_tables']; % lookup table path
 load_path = [top_path '01_DW_Extracted']; % location of 'raw' data file
 output_path = [top_path '02_DW_Cleaned']; % location of 'raw' data file
 
-
 % Separate filename into differnt parts:
 [pathstr,fname,ext] = fileparts(fname_in);
 if isempty(pathstr)==1
