@@ -1,3 +1,7 @@
+
+Address for UTS Ticket reporting (to be used to report data issues, such as missing MacIDs):
+https://macservicedesk.mcmaster.ca/splash/
+
 Task List (20170430)
 - Check new DW extract for errors -- incorporate fixes into processing script (+lookup table)
 - Develop initials for all users

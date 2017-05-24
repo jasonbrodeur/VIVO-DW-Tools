@@ -6,20 +6,20 @@ Elements_fieldname	DW_fieldname
 [KnownAs]	KnownAs
 [Suffix]	Suffix
 [Email]	Email addr
-[AuthenticatingAuthority]	<ADS>
+[AuthenticatingAuthority]	AuthenticatingAuthority
 [Username]	MAC ID
 [Proprietary_ID]	ID
 [PrimaryGroupDescriptor]	Faculty
-[Generic01]	secpos1
-[Generic02]	secdept1
-[Generic03]	secpos2
-[Generic04]	secdept2
-[Generic05]	secpos3
-[Generic06]	secdept3
-[Generic07]	secpos4
-[Generic08]	secdept4
-[Generic09]	secpos5
-[Generic10]	secdept5
+secpos1 [Generic01]	secpos1
+secdept1 [Generic02]	secdept1
+secpos2 [Generic03]	secpos2
+secdept2 [Generic04]	secdept2
+secpos3 [Generic05]	secpos3
+secdept3 [Generic06]	secdept3
+secpos4 [Generic07]	secpos4
+secdept4 [Generic08]	secdept4
+secpos5 [Generic09]	secpos5
+secdept5 [Generic10]	secdept5
 [Generic11]	
 [Generic12]	
 [Generic13]	

@@ -1,5 +1,5 @@
-% function [] = vivo_prepare_elementsHR(fname_in)
-fname_in = 'MCM_VIVO_ALL_FACULTY-62847-clean.tsv';
+function [] = vivo_prepare_elementsHR(fname_in)
+% fname_in = 'MCM_VIVO_ALL_FACULTY-62847-clean.tsv';
 % % fname_in = 'MCM_VIVO_ALL_FACULTY-62847.csv';
 
 %%% Required operations:
@@ -13,6 +13,7 @@ end
 lut_path = [top_path 'VIVO-DW-Tools/lookup_tables'];
 load_path = [top_path '02_DW_Cleaned'];
 output_path = [top_path '03_Processed_For_Elements'];
+nonfac_path = [top_path '02_NonFacultyUsers'];
 
 %% Load additional files
 %%% Load the positions lookup table
@@ -79,6 +80,8 @@ knownas_col = find(strcmp(headers,'KnownAs')==1);
 suffix_col = find(strcmp(headers,'Suffix')==1);
 dept_col = find(strcmp(headers,'Department')==1);
 
+fac_col = find(strcmp(headers,'Faculty')==1);
+
 secpos_col = [size(dw,2)+1:2:size(dw,2)+10]';
 secdept_col = [size(dw,2)+2:2:size(dw,2)+11]';
 for j = 1:1:5
@@ -89,15 +92,45 @@ for j = 1:1:5
     eval(['secpos_col' num2str(j) ' = secpos_col(j,1);'])
     eval(['secdept_col' num2str(j) ' = secdept_col(j,1);'])
 end
-% clear secpos_col secdept_col;
 
+%%% Add a column at the end for authenticating authority
+auth_col = find(strcmp(headers,'AuthenticatingAuthority')==1);
+if isempty(auth_col)
+    dw = [dw cell(length(dw),1)];   auth_col = size(dw,2);   headers{auth_col,1}='AuthenticatingAuthority';
+end
+
+% clear secpos_col secdept_col;
+clear C;
+%% Load the non-faculty users file:
+%%% We've assumed the same format as the Faculty file -- dangerous? Probably!
+fid_nf = fopen([nonfac_path '/' 'NonFacultyUsers-current.csv'],'r');
+tline = fgetl(fid_nf);
+frewind(fid_nf);
+numcols2 = length(regexp(tline,','))+1;
+formatspec = repmat('%s',1,numcols2);
+C = textscan(fid_nf,formatspec,'Delimiter',',');
+fclose(fid_nf);
+
+%%% Extract headers - compare to header file for faculty users
+match_flag = NaN*ones(numcols2,1);
+for i = 1:1:numcols2
+    % headers{i,1} = C{1,i}(1,1){1,1};
+    headers_nf{i,1} = C{1,i}{1,1};%{1,1};
+    match_flag(i,1) = strcmp(headers_nf{i,1},headers{i,1});
+    dw_nf(:,i) = C{1,i}(2:end,1);
+end
+clear C;
+if sum(match_flag,1)~=numcols2
+    disp('The header file for the Faculty (DW) data does not match with that for the non-faculty users. Inspect and fix this before proceeding');
+    return;
+end
 %% Load the output file:
-fid_out =fopen([output_path '/Elements_HR.tsv'],'w');
+fid_out =fopen([output_path '/McM_HR_import_current.tsv'],'w');
 hr_headers = dw2hr(:,1);
 tmp_out = sprintf('%s\t',hr_headers{:});
 fprintf(fid_out, '%s\n',tmp_out);
 
-fid_out2 =fopen([output_path '/Elements_HR.csv'],'w');
+fid_out2 =fopen([output_path '/McM_HR_import_current.csv'],'w');
 hr_headers = dw2hr(:,1);
 tmp_out = sprintf('%s,',hr_headers{:});
 fprintf(fid_out2, '%s\n',tmp_out);
@@ -176,51 +209,18 @@ for i = 1:1:length(unique_emplnum);
             tmp_output{1,secdept_col(jj-1,1)} = tmp{ind_ranks(jj),dept_col};
         end
         
-        %         %%%% Pull out primary position information if there are multiple appointments
-        %         %%% Remove any position ranks flagged with -999 *should not be displayed*
-        %         pos_rank(pos_rank(:,1)==-999,:) = [];
-        %         tmp_pos = tmp(:,pos_col); %pull out all of the positions
-        %         % Iterate through the listed positions - pull out the hierarchical rank.
-        %         for j = 1:1:length(tmp_pos)
-        %             %                 right_col = find(strcmp(tmp_pos{j,1},pos_lut(:,2))==1,1,'first')
-        %             pos_rank(j,1) = str2double(pos_lut{find(strcmp(tmp_pos{j,1},pos_lut(:,2))==1,1,'first'),3});
-        %             % tmp_pos{j,2} = pos_lut{find(strcmp(tmp_pos{j,1},pos_lut(:,2))==1,1,'first'),3};
-        %         end
-        
-        
-        %         % The highest-ranked (i.e. closest to 1) is our winner.
-        %         %ind3=find(pos_rank(:,1)==min(pos_rank(:,1)));
-        %
-        %         if size(pos_rank,1)==1 % if there's one position left, we're done
-        %             tmp_output = tmp(ind3,:);
-        %         else % if there's more than one "top-rank" position, we need to run more filtering
-        %
-        %             %                 disp(['Multiple top rank positions found for: ' tmp{1,id_col} ', ' tmp{1,fname_col} ' ' tmp{1,lname_col}]);
-        %             tmp_output = {};
-        %             tmp = tmp(ind3,:);
-        %             %%% Test 2: if only 1 unique position code exists, see if we can pull out the
-        %             %%% McMaster email -- if so, then our work is done and we've
-        %             %%% deduped.
-        %
-        %             % Pull out all unique position ids for an individual:
-        %             unique_posid = unique(tmp(:,posid_col));
-        %             if length(unique_posid)==1; % if only 1 position id, we should be able to pull out entry that has mcmaster email.
-        %                 ind2 = find(strcmp('McMaster',tmp(:,emailtype_col))==1); % look for a match in the "Email Type" column
-        %                 if size(ind2,1)==1 %if there's one row with a match, we're all set.
-        %                     tmp_output = tmp(ind2,:);
-        %                 elseif size(ind2,1)>1
-        %                     disp(['Multiple rows with McMaster email address and same position number for: ' tmp{1,id_col} ', ' tmp{1,fname_col} ' ' tmp{1,lname_col}]);
-        %                 else %
-        %                     disp(['Could not find McMaster email address for: ' tmp{1,id_col} ', ' tmp{1,fname_col} ' ' tmp{1,lname_col}]);
-        %
-        %                 end
-        %
-        %             end
-        %         end
     end
     
     %%%%%% Write data to the HR file:
     if isempty(tmp_output)~=1
+        %%% Insert Authenticating Authority information as either 'FHS' (for faculty of health sciences) or 'NONFHS' (for
+        %%% others), according to faculty of primary appointment.
+        switch tmp_output{1,fac_col}
+            case 'Faculty of Health Sciences'
+                tmp_output{1,auth_col} = 'FHS';
+            otherwise
+                tmp_output{1,auth_col} = 'NONFHS';
+        end
         
         for k = 1:1:size(dw2hr,1)
             if k < size(dw2hr,1); formatspec = '%s\t';formatspec2 = '%s,'; else formatspec = '%s\n'; formatspec2 = '%s\n';end
@@ -236,7 +236,7 @@ for i = 1:1:length(unique_emplnum);
             else
                 dw_colname = dw2hr{k,2};
                 tmp_print = tmp_output{1,find(strcmp(dw_colname,headers(:,1))==1)};
-                if strcmp(dw2hr{k,1},'[Position]')==1 || strcmp(dw2hr{k,1},'[Department]')==1 || strncmp(dw2hr{k,1},'[Generic',8)==1
+                if strcmp(dw2hr{k,1},'[Position]')==1 || strcmp(dw2hr{k,1},'[Department]')==1 || strncmp(dw2hr{k,1},'sec',3)==1
                     tmp_print = ['"' tmp_print '"'];
                 end
                 fprintf(fid_out,formatspec,tmp_print);
@@ -251,6 +251,62 @@ for i = 1:1:length(unique_emplnum);
         end
     end
 end
+
+
+%% Process the non-faculty data file; remove duplicates (eventually), and write to the HR Import File.
+%%% Remove all rows with no employee ID
+% ind_noID = find(isempty(dw_nf(:,id_col)));
+ind_noID = find(cellfun('isempty',dw_nf(:,id_col))==1);
+
+if size(ind_noID,1)>0
+    disp(['Entries with no unique ID (employee ID) found in rows:' num2str((ind_noID+1)') ' of the non-faculty users file. Ignoring']);
+    dw_nf(ind_noID,:)=[];
+end
+
+for i = 1:1:size(dw_nf,1);
+    tmp_output = dw_nf(i,:);
+    for k = 1:1:size(dw2hr,1)
+        if k < size(dw2hr,1); formatspec = '%s\t';formatspec2 = '%s,'; else formatspec = '%s\n'; formatspec2 = '%s\n';end
+        
+        if isempty(dw2hr{k,2})==1 % if there's no matching field in DW, this elements field is blank
+            fprintf(fid_out,formatspec,'');
+            fprintf(fid_out2,formatspec2,'');
+        elseif strcmp(dw2hr{k,2}(1),'<')==1 % The '< >' symbols around a field indicates that the new field should be populated with that exact string.
+            if strcmp(dw2hr{k,1},'[IsAcademic]')==1
+                tmp_print = 'FALSE';
+            else
+                tmp_print = dw2hr{k,2}(2:end-1);
+            end
+            fprintf(fid_out,formatspec,tmp_print);
+            fprintf(fid_out2,formatspec2,tmp_print);
+        elseif strcmp(dw2hr{k,1},'[AuthenticatingAuthority]')==1 %%% If we're on the AuthenticatingAuthority field, fill it in based on reported faculty.
+            switch tmp_output{1,fac_col}
+                case {'Faculty of Health Sciences'} % Maybe we add CSU in here?
+                    tmp_print = 'FHS';
+                otherwise
+                    tmp_print = 'NONFHS';
+            end
+            fprintf(fid_out,formatspec,tmp_print);
+            fprintf(fid_out2,formatspec2,tmp_print);
+        else
+            dw_colname = dw2hr{k,2};
+            ind_rightcol = find(strcmp(dw_colname,headers_nf(:,1))==1);
+            if isempty(ind_rightcol)
+                tmp_print = '';
+            else
+                tmp_print = tmp_output{1,find(strcmp(dw_colname,headers_nf(:,1))==1)};
+                if strcmp(dw2hr{k,1},'[Position]')==1 || strcmp(dw2hr{k,1},'[Department]')==1 || strncmp(dw2hr{k,1},'sec',3)==1
+                    tmp_print = ['"' tmp_print '"'];
+                end
+            end
+            fprintf(fid_out,formatspec,tmp_print);
+            fprintf(fid_out2,formatspec2,tmp_print);
+        end
+        clear tmp_print;
+    end
+end
+
+%% Close the files:
 fclose(fid_out);
 fclose(fid_out2);
 fclose(fid_issues);

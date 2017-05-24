@@ -149,14 +149,14 @@ for i = 1:1:length(dw(:,macid_col))
     %dw{i,fname_col} = regexprep(tmp,'(\<[a-z])','${upper($1)}')
 end
 
-%%% Check for people with no MAC ID: %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-ind = find(strcmp(dw(:,macid_col),'-')==1 | strcmp(dw(:,macid_col),'')==1);
-if size(ind,1)>0
-    fprintf(fid_report,'%s\n','IDs with no MAC IDs');
-    for i = 1:1:length(ind)
-        fprintf(fid_report,'%s\n',dw{ind(i),1})
-    end
-end
+% % %%% Check for people with no MAC ID: %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% % ind = find(strcmp(dw(:,macid_col),'-')==1 | strcmp(dw(:,macid_col),'')==1);
+% % if size(ind,1)>0
+% %     fprintf(fid_report,'%s\n','IDs with no MAC IDs');
+% %     for i = 1:1:length(ind)
+% %         fprintf(fid_report,'%s\n',dw{ind(i),1});
+% %     end
+% % end
 
 %% First Names to Sentence case: %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Exceptions for capitalization
@@ -164,13 +164,13 @@ end
 %%% following a hyphen
 
 %%% Cleanup for first names
-fprintf(fid_report,'%s\n','IDs requiring first name cleanup:')
+fprintf(fid_report,'%s\n','IDs requiring first name cleanup:');
 
 % period to space:
 period = strfind(dw(:,fname_col),'.');
 ind=find(cellfun('isempty',period)==0);
 for i = 1:1:length(ind)
-    fprintf(fid_report,'%s\n',[dw{ind(i),1} ' - remove period'])
+    fprintf(fid_report,'%s\n',[dw{ind(i),1} ' - remove period']);
     dw{ind(i),fname_col} = strrep(dw{ind(i),fname_col},'.',' ');
 end
 
@@ -178,28 +178,28 @@ end
 extra_space = strfind(dw(:,fname_col),' - ');
 ind=find(cellfun('isempty',extra_space)==0);
 for i = 1:1:length(ind)
-    fprintf(fid_report,'%s\n',dw{ind(i),1})
+    fprintf(fid_report,'%s\n',dw{ind(i),1});
     dw{ind(i),fname_col} = strrep(dw{ind(i),fname_col},' - ','-');
 end
 % remove extra space on left side of hyphen:
 extra_space = strfind(dw(:,fname_col),'- ');
 ind=find(cellfun('isempty',extra_space)==0);
 for i = 1:1:length(ind)
-    fprintf(fid_report,'%s\n',dw{ind(i),1})
+    fprintf(fid_report,'%s\n',dw{ind(i),1});
     dw{ind(i),fname_col} = strrep(dw{ind(i),fname_col},'- ','-');
 end
 % remove extra space on right side of hyphen:
 extra_space = strfind(dw(:,fname_col),' -');
 ind=find(cellfun('isempty',extra_space)==0);
 for i = 1:1:length(ind)
-    fprintf(fid_report,'%s\n',dw{ind(i),1})
+    fprintf(fid_report,'%s\n',dw{ind(i),1});
     dw{ind(i),fname_col} = strrep(dw{ind(i),fname_col},' -','-');
 end
 % remove two spaces between names:
 extra_space = strfind(dw(:,fname_col),'  ');
 ind=find(cellfun('isempty',extra_space)==0);
 for i = 1:1:length(ind)
-    fprintf(fid_report,'%s\n',dw{ind(i),1})
+    fprintf(fid_report,'%s\n',dw{ind(i),1});
     dw{ind(i),fname_col} = strrep(dw{ind(i),fname_col},'  ',' ');
 end
 
@@ -231,6 +231,24 @@ for i = 1:1:length(dw(:,fname_col))
        tmp = tmp(1:paren-1);
     end
     
+    %%% We've also seen that "" are used to indicate KnownAs. Repeat the Process:
+    quote = strfind(tmp,'"');
+    if ~isempty(quote) 
+       if numel(quote)==1   
+           if strcmp(tmp(end),' ')==1; 
+               dw{i,knownas_col} = tmp(quote(1)+1:end-1);
+           else
+               dw{i,knownas_col} = tmp(quote(1)+1:end);
+           end
+       elseif numel(quote) ==2
+           dw{i,knownas_col} = tmp(quote(1)+1:quote(2)-1);
+           
+       else
+           fprintf(fid_report,'%s\n',['More than two quotation marks in first name string for ' dw{ind(i),1}]);
+       end  
+       tmp = tmp(1:quote(1)-1);
+    end
+
     %%% Pull out Suffixes - write them to the "Suffix" field. Remove them
     %%% from the first name.
     for sfx_ctr = 1:1:size(suffixes,1)
@@ -268,13 +286,13 @@ end
 % remove spaces around hyphens
 % ensure a single space between different words (turn '  ' into ' ')
 
-fprintf(fid_report,'%s\n','IDs requiring middle name cleanup:')
+fprintf(fid_report,'%s\n','IDs requiring middle name cleanup:');
 
 % period to space:
 period = strfind(dw(:,mname_col),'.');
 ind=find(cellfun('isempty',period)==0);
 for i = 1:1:length(ind)
-    fprintf(fid_report,'%s\n',[dw{ind(i),1} ' - remove period'])
+    fprintf(fid_report,'%s\n',[dw{ind(i),1} ' - remove period']);
     dw{ind(i),mname_col} = strrep(dw{ind(i),mname_col},'.',' ');
 end
 
@@ -282,7 +300,7 @@ end
 extra_space = strfind(dw(:,mname_col),' - ');
 ind=find(cellfun('isempty',extra_space)==0);
 for i = 1:1:length(ind)
-    fprintf(fid_report,'%s\n',[dw{ind(i),1} ' - remove spaces around hyphen.'])
+    fprintf(fid_report,'%s\n',[dw{ind(i),1} ' - remove spaces around hyphen.']);
     dw{ind(i),mname_col} = strrep(dw{ind(i),mname_col},' - ','-');
 end
 
@@ -290,7 +308,7 @@ end
 extra_space = strfind(dw(:,mname_col),'- ');
 ind=find(cellfun('isempty',extra_space)==0);
 for i = 1:1:length(ind)
-    fprintf(fid_report,'%s\n',[dw{ind(i),1} ' - remove spaces around hyphen.'])
+    fprintf(fid_report,'%s\n',[dw{ind(i),1} ' - remove spaces around hyphen.']);
     dw{ind(i),mname_col} = strrep(dw{ind(i),mname_col},'- ','-');
 end
 
@@ -298,14 +316,14 @@ end
 extra_space = strfind(dw(:,mname_col),' -');
 ind=find(cellfun('isempty',extra_space)==0);
 for i = 1:1:length(ind)
-    fprintf(fid_report,'%s\n',[dw{ind(i),1} ' - remove spaces around hyphen.'])
+    fprintf(fid_report,'%s\n',[dw{ind(i),1} ' - remove spaces around hyphen.']);
     dw{ind(i),mname_col} = strrep(dw{ind(i),mname_col},' -','-');
 end
 % remove two spaces between names:
 extra_space = strfind(dw(:,mname_col),'  ');
 ind=find(cellfun('isempty',extra_space)==0);
 for i = 1:1:length(ind)
-    fprintf(fid_report,'%s\n',[dw{ind(i),1} ' - remove extra blank space'])
+    fprintf(fid_report,'%s\n',[dw{ind(i),1} ' - remove extra blank space']);
     dw{ind(i),mname_col} = strrep(dw{ind(i),mname_col},'  ',' ');
 end
 
@@ -340,34 +358,34 @@ end
 %%% following 'MC' and 'MAC' at the start of a name
 
 %%% Additional cleanup for last names
-fprintf(fid_report,'%s\n','IDs requiring last name cleanup')
+fprintf(fid_report,'%s\n','IDs requiring last name cleanup');
 
 % extra space on either side of hyphen:
 extra_space = strfind(dw(:,lname_col),' - ');
 ind=find(cellfun('isempty',extra_space)==0);
 for i = 1:1:length(ind)
-    fprintf(fid_report,'%s\n',dw{ind(i),1})
+    fprintf(fid_report,'%s\n',dw{ind(i),1});
     dw{ind(i),lname_col} = strrep(dw{ind(i),lname_col},' - ','-');
 end
 % remove extra space on left side of hyphen:
 extra_space = strfind(dw(:,lname_col),'- ');
 ind=find(cellfun('isempty',extra_space)==0);
 for i = 1:1:length(ind)
-    fprintf(fid_report,'%s\n',dw{ind(i),1})
+    fprintf(fid_report,'%s\n',dw{ind(i),1});
     dw{ind(i),lname_col} = strrep(dw{ind(i),lname_col},'- ','-');
 end
 % remove extra space on right side of hyphen:
 extra_space = strfind(dw(:,lname_col),' -');
 ind=find(cellfun('isempty',extra_space)==0);
 for i = 1:1:length(ind)
-    fprintf(fid_report,'%s\n',dw{ind(i),1})
+    fprintf(fid_report,'%s\n',dw{ind(i),1});
     dw{ind(i),lname_col} = strrep(dw{ind(i),lname_col},' -','-');
 end
 % remove two spaces between names:
 extra_space = strfind(dw(:,lname_col),'  ');
 ind=find(cellfun('isempty',extra_space)==0);
 for i = 1:1:length(ind)
-    fprintf(fid_report,'%s\n',dw{ind(i),1})
+    fprintf(fid_report,'%s\n',dw{ind(i),1});
     dw{ind(i),lname_col} = strrep(dw{ind(i),lname_col},'  ',' ');
 end
 
@@ -382,6 +400,7 @@ for i = 1:1:length(dw(:,lname_col))
     if length(hyphen)>0; to_upper= [to_upper; hyphen'+1]; end
     if strncmp(tmp,'mc',2)==1; to_upper = [to_upper; 3];end
     if strncmp(tmp,'mac',3)==1; to_upper = [to_upper; 4];end
+    if strncmp(tmp,'o''',2)==1; to_upper = [to_upper; 3];end
     tmp(to_upper) = upper(tmp(to_upper));
     dw{i,lname_col}= tmp;
 end
@@ -492,8 +511,8 @@ unique_pos = unique(dw(:,pos_col));
 for i = 1:1:length(unique_pos)
     lookup_match = find(strcmp(D{1,1}(:,1),unique_pos{i,1})==1);
     if isempty(lookup_match)==1
-        fprintf(fid_report,'%s\n','Positions to add to lookup table:')
-        fprintf(fid_report,'%s\n',unique_pos{i,1})
+        fprintf(fid_report,'%s\n','Positions to add to lookup table:');
+        fprintf(fid_report,'%s\n',unique_pos{i,1});
     else
         ind = find(strcmp(dw(:,pos_col),unique_pos{i,1})==1);
         %%%substitute all positions of this type with the proper title
@@ -523,8 +542,8 @@ unique_fac = unique(dw(:,fac_col));
 for i = 1:1:length(unique_fac)
     lookup_match = find(strcmp(D{1,1}(:,1),unique_fac{i,1})==1);
     if isempty(lookup_match)==1
-        fprintf(fid_report,'%s\n','Faculties to add to lookup table:')
-        fprintf(fid_report,'%s\n',unique_fac{i,1})
+        fprintf(fid_report,'%s\n','Faculties to add to lookup table:');
+        fprintf(fid_report,'%s\n',unique_fac{i,1});
     else
         ind = find(strcmp(dw(:,fac_col),unique_fac{i,1})==1);
         %%%substitute all positions of this type with the proper title
@@ -554,8 +573,8 @@ unique_dept = unique(dw(:,dept_col));
 for i = 1:1:length(unique_dept)
     lookup_match = find(strcmp(D{1,1}(:,1),unique_dept{i,1})==1);
     if isempty(lookup_match)==1
-        fprintf(fid_report,'%s\n','Departments to add to lookup table:')
-        fprintf(fid_report,'%s\n',unique_dept{i,1})
+        fprintf(fid_report,'%s\n','Departments to add to lookup table:');
+        fprintf(fid_report,'%s\n',unique_dept{i,1});
     else
         ind = find(strcmp(dw(:,dept_col),unique_dept{i,1})==1);
         %%%substitute all positions of this type with the proper title
@@ -601,10 +620,22 @@ for i = 1:1:size(dw,1)
     end
 end
 
-%%% Close the report:
-fclose(fid_report);
+%% If any records have a MacID of '-', remove them from the data, write them to a new file, and list them in the problem report:
+ind_nomacid = find(strcmp('-',dw(:,macid_col))==1);
+fid_nomacid = fopen([output_path '/' fname '_noMacID.tsv'],'w');
+tmp = sprintf('%s\t',headers{:});
+fprintf(fid_nomacid,'%s\n',tmp);
+fprintf(fid_report,'%s\n','Users with no MacID (removed from further processing):')
 
-%% Write the Final Output:
+for i = 1:1:length(ind_nomacid)
+    fprintf(fid_nomacid,'%s\n',sprintf('%s\t',dw{ind_nomacid(i),:}));
+    fprintf(fid_report,'%s\n',dw{ind_nomacid(i),1});
+end
+fclose(fid_nomacid);
+dw(ind_nomacid,:) = [];
+
+%% Close the report, Write the Final Output:
+fclose(fid_report);
 
 fid_out = fopen([output_path '/' fname '-clean.tsv'],'w');
 tmp = sprintf('%s\t',headers{:});
