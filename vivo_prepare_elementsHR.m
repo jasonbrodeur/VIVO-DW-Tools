@@ -16,10 +16,10 @@ function [] = vivo_prepare_elementsHR(fname_in)
 
 % Set path depending on whether PC or linux:
 if ispc==1
-    if exist('D:/Seafile/VIVO_Secure_Data/','folder')==7
+    if exist('D:/Seafile/VIVO_Secure_Data/','dir')==7
     top_path = 'D:/Seafile/VIVO_Secure_Data/';
-    elseif exist('X:/xxx/xxx','folder')==7      % Gabriela, you can add in your path here
-    top_path = 'X:/xxx/xxx';                    % Gabriela, you can add in your path here
+    elseif exist('C:\MacDrive\Seafile\VIVO_Secure_Data\','dir')==7      % Gabriela, you can add in your path here
+    top_path = 'C:\MacDrive\Seafile\VIVO_Secure_Data\';                    % Gabriela, you can add in your path here
     else
         disp('Starting path not assigned. See line ~20 Exiting'); return;
     end
@@ -212,6 +212,9 @@ for i = 1:1:length(unique_emplnum);
                     tmp(ind2(ind3==0),:) = [];
                     tmp_ranks(ind2(ind3==0),:) = [];
                     disp(['Multiple rows with McMaster email address and same position number for: ' tmp{1,id_col} ', ' tmp{1,fname_col} ' ' tmp{1,lname_col}]);
+                    for tt = 1:1:size(tmp,1)
+                    fprintf(fid_issues,'%s\n',sprintf('%s\t',tmp{tt,:}));
+                    end
                 else %
                     disp(['Could not find McMaster email address for: ' tmp{1,id_col} ', ' tmp{1,fname_col} ' ' tmp{1,lname_col}]);
                 end

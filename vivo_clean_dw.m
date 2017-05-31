@@ -18,10 +18,10 @@ function [] = vivo_clean_dw(fname_in)
 
 %%% Set the starting path:
 if ispc==1
-    if exist('D:/Seafile/VIVO_Secure_Data/','folder')==7
+    if exist('D:/Seafile/VIVO_Secure_Data/','dir')==7
     top_path = 'D:/Seafile/VIVO_Secure_Data/';
-    elseif exist('X:/xxx/xxx','folder')==7      % Gabriela, you can add in your path here
-    top_path = 'X:/xxx/xxx';                    % Gabriela, you can add in your path here
+    elseif exist('C:\MacDrive\Seafile\VIVO_Secure_Data\','dir')==7      % Gabriela, you can add in your path here
+    top_path = 'C:\MacDrive\Seafile\VIVO_Secure_Data\';                    % Gabriela, you can add in your path here
     else
         disp('Starting path not assigned. See line ~20 Exiting'); return;
     end
