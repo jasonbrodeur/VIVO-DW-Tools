@@ -12,6 +12,22 @@ function [] = vivo_prepare_elementsHR(fname_in)
 % sample usage: vivo_prepare_elementsHR('MCM_VIVO_ALL_FACULTY-62847-clean.tsv') or vivo_prepare_elementsHR('62847') or vivo_prepare_elementsHR(62847);
 % Created February 2017 by JJB.
 
+%% Update log:
+%%% 2017-06-26
+% 1. You can now run a selected version of the DW data (e.g. 66128) by simply using this value as an input, so:
+% vivo_prepare_elementsHR('MCM_VIVO_ALL_FACULTY-62847-clean.tsv')
+% vivo_prepare_elementsHR('62847') or 
+% vivo_prepare_elementsHR(62847);
+% are all equivalent
+% 
+% 2. I've created a tracker/log file, to keep track of which version had been last run--this way, there's no more confusion about which 'version' of the data is represented in McM_HR_import_current.csv. This is all updated in the documentation (text pasted below):
+% Write a record to McM_HR_import_creation_tracker.tsv, with three columns indicating the: 
+% Date and time for which the McM_HR_import_current.csv file was created 
+% The file version number (e.g. ‘66128’) represented by the data in the output file
+% Whether the process was successful (=’1’) or unsuccessful (=’-1’)
+
+
+%% The function:
 % Set path depending on whether PC or linux:
 if ispc==1
     if exist('D:/Seafile/VIVO_Secure_Data/','dir')==7
