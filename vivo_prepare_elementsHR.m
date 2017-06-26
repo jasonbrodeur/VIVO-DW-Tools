@@ -9,15 +9,15 @@ function [] = vivo_prepare_elementsHR(fname_in)
 % The function also loads in a list of non-faculty users, to be integrated into the HR file.
 %%% Outputs:
 % The outputs include a ready-for-Elements-import version of the HR data
-% sample usage: 'vivo_prepare_elementsHR('MCM_VIVO_ALL_FACULTY-62847-clean.tsv') or vivo_prepare_elementsHR('62847');
+% sample usage: vivo_prepare_elementsHR('MCM_VIVO_ALL_FACULTY-62847-clean.tsv') or vivo_prepare_elementsHR('62847') or vivo_prepare_elementsHR(62847);
 % Created February 2017 by JJB.
 
 % Set path depending on whether PC or linux:
 if ispc==1
     if exist('D:/Seafile/VIVO_Secure_Data/','dir')==7
-    top_path = 'D:/Seafile/VIVO_Secure_Data/';
+        top_path = 'D:/Seafile/VIVO_Secure_Data/';
     elseif exist('C:\MacDrive\Seafile\VIVO_Secure_Data\','dir')==7      % Gabriela, you can add in your path here
-    top_path = 'C:\MacDrive\Seafile\VIVO_Secure_Data\';                    % Gabriela, you can add in your path here
+        top_path = 'C:\MacDrive\Seafile\VIVO_Secure_Data\';                    % Gabriela, you can add in your path here
     else
         disp('Starting path not assigned. See line ~20 Exiting'); return;
     end
@@ -30,7 +30,12 @@ load_path = [top_path '02_DW_Cleaned']; % cleaned data path
 output_path = [top_path '03_Processed_For_Elements']; % output path
 nonfac_path = [top_path '02_NonFacultyUsers']; % location of non-faculty-users list
 
-%%% Split apart 
+%%% If a number is inputted (e.g. 66128) instead of a string, transform to string.
+if ischar(fname_in)~=1
+    fname_in = num2str(fname_in);
+end
+    
+%%% Split apart the filename:
 [pathstr,fname,ext] = fileparts(fname_in);
 if strcmpi(fname(1:3),'MCM')~=1; % if only the number is given (e.g. '62198'), then build the entire string.
     file_ver = fname; % The file version number
@@ -203,91 +208,96 @@ dw_ranks = dw_ranks(ind,:);
 
 %%% Run through each unique employee number deduplicate, pull out primary
 %%% position.
-for i = 1:1:length(unique_emplnum);
-    clear tmp pos_rank;
-    tmp_output = {};
-    ind = find(emplnum_sort==unique_emplnum(i)); % list of rows in dw_sort where identical IDs are found
-    if size(ind,1)==1 %%%% If there's only one entry, then we're deduped already.
-        tmp_output = dw_sort(ind,:);
-    else
-        %%%% If there's more than one entry, then we follow this approach:
-        % 1) Remove any duplicate rows (that differ only by email address) -- take the McMaster address and discard the rest
-        % 2) Rank the rest of the positions using the position lookup table
-        % 3) The first in the list is the primary; all the rest are written to Generic columns as AutoGroups
-        
-        tmp = dw_sort(ind,:); % pulls out all rows where ID equals the next unique ID in the iterative list
-        tmp_ranks = dw_ranks(ind,1); % pulls out ranks for each position associated with each employee ID
-        [unique_posid,ia,ic]= unique(tmp(:,posid_col));
-        %     if length(ic)> length(ia) % if there are more rows in the original list than unique values, then we have likely a duplicated entry.
-        for ind_pos = 1:1:size(unique_posid,1)
-            ind2 = find(strcmp(tmp(:,posid_col),unique_posid{ind_pos,1})==1);
-            if size(ind2,1)>1
-                ind3 = strcmp('McMaster',tmp(ind2,emailtype_col)); % look for a match in the "Email Type" column
-                if sum(ind3)==1 %if there's one row with a match, we're all set.
-                    tmp(ind2(ind3==0),:) = [];
-                    tmp_ranks(ind2(ind3==0),:) = [];
-                elseif sum(ind3)>1
-                    tmp(ind2(ind3==0),:) = [];
-                    tmp_ranks(ind2(ind3==0),:) = [];
-                    disp(['Multiple rows with McMaster email address and same position number for: ' tmp{1,id_col} ', ' tmp{1,fname_col} ' ' tmp{1,lname_col}]);
-                    for tt = 1:1:size(tmp,1)
-                    fprintf(fid_issues,'%s\n',sprintf('%s\t',tmp{tt,:}));
-                    end
-                else %
-                    disp(['Could not find McMaster email address for: ' tmp{1,id_col} ', ' tmp{1,fname_col} ' ' tmp{1,lname_col}]);
-                end
-            end
-        end
-        %%% The primary position is that with the highest rank
-        [ranks_sort, ind_ranks] = sort(tmp_ranks,'ascend');
-        tmp_output = tmp(ind_ranks(1),:);
-        %%% Place all other remaining position information into Generic Columns
-        for jj = 2:1:min(length(tmp_ranks),6)
-            tmp_output{1,secpos_col(jj-1,1)} = tmp{ind_ranks(jj),pos_col};
-            tmp_output{1,secdept_col(jj-1,1)} = tmp{ind_ranks(jj),dept_col};
-        end
-        
-    end
-    
-    %%%%%% Write data to the HR file:
-    if isempty(tmp_output)~=1
-        %%% Insert Authenticating Authority information as either 'FHS' (for faculty of health sciences) or 'NONFHS' (for
-        %%% others), according to faculty of primary appointment.
-        switch tmp_output{1,fac_col}
-            case 'Faculty of Health Sciences'
-                tmp_output{1,auth_col} = 'FHS';
-            otherwise
-                tmp_output{1,auth_col} = 'NONFHS';
-        end
-        
-        for k = 1:1:size(dw2hr,1)
-            if k < size(dw2hr,1); formatspec = '%s\t';formatspec2 = '%s,'; else formatspec = '%s\n'; formatspec2 = '%s\n';end
+try
+    for i = 1:1:length(unique_emplnum);
+        clear tmp pos_rank;
+        tmp_output = {};
+        ind = find(emplnum_sort==unique_emplnum(i)); % list of rows in dw_sort where identical IDs are found
+        if size(ind,1)==1 %%%% If there's only one entry, then we're deduped already.
+            tmp_output = dw_sort(ind,:);
+        else
+            %%%% If there's more than one entry, then we follow this approach:
+            % 1) Remove any duplicate rows (that differ only by email address) -- take the McMaster address and discard the rest
+            % 2) Rank the rest of the positions using the position lookup table
+            % 3) The first in the list is the primary; all the rest are written to Generic columns as AutoGroups
             
-            if isempty(dw2hr{k,2})==1 % if there's no matching field in DW, this elements field is blank
-                fprintf(fid_out,formatspec,'');
-                fprintf(fid_out2,formatspec2,'');
-            elseif strcmp(dw2hr{k,2}(1),'<')==1
-                tmp_print = dw2hr{k,2}(2:end-1);
-                fprintf(fid_out,formatspec,tmp_print);
-                fprintf(fid_out2,formatspec2,tmp_print);
-                
-            else
-                dw_colname = dw2hr{k,2};
-                tmp_print = tmp_output{1,find(strcmp(dw_colname,headers(:,1))==1)};
-                if strcmp(dw2hr{k,1},'[Position]')==1 || strcmp(dw2hr{k,1},'[Department]')==1 || strncmp(dw2hr{k,1},'sec',3)==1
-                    tmp_print = ['"' tmp_print '"'];
+            tmp = dw_sort(ind,:); % pulls out all rows where ID equals the next unique ID in the iterative list
+            tmp_ranks = dw_ranks(ind,1); % pulls out ranks for each position associated with each employee ID
+            [unique_posid,ia,ic]= unique(tmp(:,posid_col));
+            %     if length(ic)> length(ia) % if there are more rows in the original list than unique values, then we have likely a duplicated entry.
+            for ind_pos = 1:1:size(unique_posid,1)
+                ind2 = find(strcmp(tmp(:,posid_col),unique_posid{ind_pos,1})==1);
+                if size(ind2,1)>1
+                    ind3 = strcmp('McMaster',tmp(ind2,emailtype_col)); % look for a match in the "Email Type" column
+                    if sum(ind3)==1 %if there's one row with a match, we're all set.
+                        tmp(ind2(ind3==0),:) = [];
+                        tmp_ranks(ind2(ind3==0),:) = [];
+                    elseif sum(ind3)>1
+                        tmp(ind2(ind3==0),:) = [];
+                        tmp_ranks(ind2(ind3==0),:) = [];
+                        disp(['Multiple rows with McMaster email address and same position number for: ' tmp{1,id_col} ', ' tmp{1,fname_col} ' ' tmp{1,lname_col}]);
+                        for tt = 1:1:size(tmp,1)
+                            fprintf(fid_issues,'%s\n',sprintf('%s\t',tmp{tt,:}));
+                        end
+                    else %
+                        disp(['Could not find McMaster email address for: ' tmp{1,id_col} ', ' tmp{1,fname_col} ' ' tmp{1,lname_col}]);
+                    end
                 end
-                fprintf(fid_out,formatspec,tmp_print);
-                fprintf(fid_out2,formatspec2,tmp_print);
-                clear tmp_print;
+            end
+            %%% The primary position is that with the highest rank
+            [ranks_sort, ind_ranks] = sort(tmp_ranks,'ascend');
+            tmp_output = tmp(ind_ranks(1),:);
+            %%% Place all other remaining position information into Generic Columns
+            for jj = 2:1:min(length(tmp_ranks),6)
+                tmp_output{1,secpos_col(jj-1,1)} = tmp{ind_ranks(jj),pos_col};
+                tmp_output{1,secdept_col(jj-1,1)} = tmp{ind_ranks(jj),dept_col};
+            end
+            
+        end
+        
+        %%%%%% Write data to the HR file:
+        if isempty(tmp_output)~=1
+            %%% Insert Authenticating Authority information as either 'FHS' (for faculty of health sciences) or 'NONFHS' (for
+            %%% others), according to faculty of primary appointment.
+            switch tmp_output{1,fac_col}
+                case 'Faculty of Health Sciences'
+                    tmp_output{1,auth_col} = 'FHS';
+                otherwise
+                    tmp_output{1,auth_col} = 'NONFHS';
+            end
+            
+            for k = 1:1:size(dw2hr,1)
+                if k < size(dw2hr,1); formatspec = '%s\t';formatspec2 = '%s,'; else formatspec = '%s\n'; formatspec2 = '%s\n';end
+                
+                if isempty(dw2hr{k,2})==1 % if there's no matching field in DW, this elements field is blank
+                    fprintf(fid_out,formatspec,'');
+                    fprintf(fid_out2,formatspec2,'');
+                elseif strcmp(dw2hr{k,2}(1),'<')==1
+                    tmp_print = dw2hr{k,2}(2:end-1);
+                    fprintf(fid_out,formatspec,tmp_print);
+                    fprintf(fid_out2,formatspec2,tmp_print);
+                    
+                else
+                    dw_colname = dw2hr{k,2};
+                    tmp_print = tmp_output{1,find(strcmp(dw_colname,headers(:,1))==1)};
+                    if strcmp(dw2hr{k,1},'[Position]')==1 || strcmp(dw2hr{k,1},'[Department]')==1 || strncmp(dw2hr{k,1},'sec',3)==1
+                        tmp_print = ['"' tmp_print '"'];
+                    end
+                    fprintf(fid_out,formatspec,tmp_print);
+                    fprintf(fid_out2,formatspec2,tmp_print);
+                    clear tmp_print;
+                end
+            end
+        else
+            disp(['No output for: ' tmp{1,id_col} ', ' tmp{1,fname_col} ' ' tmp{1,lname_col}]);
+            for m = 1:1:size(tmp,1);
+                fprintf(fid_issues,'%s\n',sprintf('%s\t',tmp{m,:}));
             end
         end
-    else
-        disp(['No output for: ' tmp{1,id_col} ', ' tmp{1,fname_col} ' ' tmp{1,lname_col}]);
-        for m = 1:1:size(tmp,1);
-            fprintf(fid_issues,'%s\n',sprintf('%s\t',tmp{m,:}));
-        end
     end
+    success_flag(1,1) = 1; %indicates an error
+catch
+    success_flag(1,1) = -1; %indicates an error
 end
 
 
@@ -302,55 +312,59 @@ if size(ind_noID,1)>0
 end
 
 try
-for i = 1:1:size(dw_nf,1);
-    tmp_output = dw_nf(i,:);
-    for k = 1:1:size(dw2hr,1)
-        if k < size(dw2hr,1); formatspec = '%s\t';formatspec2 = '%s,'; else formatspec = '%s\n'; formatspec2 = '%s\n';end
-        
-        if isempty(dw2hr{k,2})==1 % if there's no matching field in DW, this elements field is blank
-            fprintf(fid_out,formatspec,'');
-            fprintf(fid_out2,formatspec2,'');
-        elseif strcmp(dw2hr{k,2}(1),'<')==1 % The '< >' symbols around a field indicates that the new field should be populated with that exact string.
-            if strcmp(dw2hr{k,1},'[IsAcademic]')==1
-                tmp_print = 'FALSE';
-            else
-                tmp_print = dw2hr{k,2}(2:end-1);
-            end
-            fprintf(fid_out,formatspec,tmp_print);
-            fprintf(fid_out2,formatspec2,tmp_print);
-        elseif strcmp(dw2hr{k,1},'[AuthenticatingAuthority]')==1 %%% If we're on the AuthenticatingAuthority field, fill it in based on reported faculty.
-            switch tmp_output{1,fac_col}
-                case {'Faculty of Health Sciences'} % Maybe we add CSU in here?
-                    tmp_print = 'FHS';
-                otherwise
-                    tmp_print = 'NONFHS';
-            end
-            fprintf(fid_out,formatspec,tmp_print);
-            fprintf(fid_out2,formatspec2,tmp_print);
-        else
-            dw_colname = dw2hr{k,2};
-            ind_rightcol = find(strcmp(dw_colname,headers_nf(:,1))==1);
-            if isempty(ind_rightcol)
-                tmp_print = '';
-            else
-                tmp_print = tmp_output{1,find(strcmp(dw_colname,headers_nf(:,1))==1)};
-                if strcmp(dw2hr{k,1},'[Position]')==1 || strcmp(dw2hr{k,1},'[Department]')==1 || strncmp(dw2hr{k,1},'sec',3)==1
-                    tmp_print = ['"' tmp_print '"'];
+    for i = 1:1:size(dw_nf,1);
+        tmp_output = dw_nf(i,:);
+        for k = 1:1:size(dw2hr,1)
+            if k < size(dw2hr,1); formatspec = '%s\t';formatspec2 = '%s,'; else formatspec = '%s\n'; formatspec2 = '%s\n';end
+            
+            if isempty(dw2hr{k,2})==1 % if there's no matching field in DW, this elements field is blank
+                fprintf(fid_out,formatspec,'');
+                fprintf(fid_out2,formatspec2,'');
+            elseif strcmp(dw2hr{k,2}(1),'<')==1 % The '< >' symbols around a field indicates that the new field should be populated with that exact string.
+                if strcmp(dw2hr{k,1},'[IsAcademic]')==1
+                    tmp_print = 'FALSE';
+                else
+                    tmp_print = dw2hr{k,2}(2:end-1);
                 end
+                fprintf(fid_out,formatspec,tmp_print);
+                fprintf(fid_out2,formatspec2,tmp_print);
+            elseif strcmp(dw2hr{k,1},'[AuthenticatingAuthority]')==1 %%% If we're on the AuthenticatingAuthority field, fill it in based on reported faculty.
+                switch tmp_output{1,fac_col}
+                    case {'Faculty of Health Sciences'} % Maybe we add CSU in here?
+                        tmp_print = 'FHS';
+                    otherwise
+                        tmp_print = 'NONFHS';
+                end
+                fprintf(fid_out,formatspec,tmp_print);
+                fprintf(fid_out2,formatspec2,tmp_print);
+            else
+                dw_colname = dw2hr{k,2};
+                ind_rightcol = find(strcmp(dw_colname,headers_nf(:,1))==1);
+                if isempty(ind_rightcol)
+                    tmp_print = '';
+                else
+                    tmp_print = tmp_output{1,find(strcmp(dw_colname,headers_nf(:,1))==1)};
+                    if strcmp(dw2hr{k,1},'[Position]')==1 || strcmp(dw2hr{k,1},'[Department]')==1 || strncmp(dw2hr{k,1},'sec',3)==1
+                        tmp_print = ['"' tmp_print '"'];
+                    end
+                end
+                fprintf(fid_out,formatspec,tmp_print);
+                fprintf(fid_out2,formatspec2,tmp_print);
             end
-            fprintf(fid_out,formatspec,tmp_print);
-            fprintf(fid_out2,formatspec2,tmp_print);
+            clear tmp_print;
         end
-        clear tmp_print;
     end
+    success_flag(2,1) = 1; %indicates an error
+catch
+    success_flag(2,1) = -1; %indicates an error
 end
+
 %%% Write a record to the tracker file:
 fprintf(fid_history,'%s\t',datestr(now,30));
 fprintf(fid_history,'%s\t',file_ver);
+if sum(success_flag)==2
 fprintf(fid_history,'%s\n','1');
-catch
-fprintf(fid_history,'%s\t',datestr(now,30));
-fprintf(fid_history,'%s\t',file_ver);
+else
 fprintf(fid_history,'%s\n','-1');
 end
 %% Close the files:
