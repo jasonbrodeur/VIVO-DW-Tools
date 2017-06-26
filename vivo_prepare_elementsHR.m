@@ -1,6 +1,4 @@
 function [] = vivo_prepare_elementsHR(fname_in)
-% fname_in = 'MCM_VIVO_ALL_FACULTY-62847-clean.tsv';
-
 %%% vivo_prepare_elementsHR.m
 % This function loads cleaned DW extracted data (produced using vivo_clean_dw.m), and prepares the ready-for-Elements import file.
 
@@ -11,7 +9,7 @@ function [] = vivo_prepare_elementsHR(fname_in)
 % The function also loads in a list of non-faculty users, to be integrated into the HR file.
 %%% Outputs:
 % The outputs include a ready-for-Elements-import version of the HR data
-%
+% sample usage: 'vivo_prepare_elementsHR('MCM_VIVO_ALL_FACULTY-62847-clean.tsv') or vivo_prepare_elementsHR('62847');
 % Created February 2017 by JJB.
 
 % Set path depending on whether PC or linux:
@@ -32,6 +30,19 @@ load_path = [top_path '02_DW_Cleaned']; % cleaned data path
 output_path = [top_path '03_Processed_For_Elements']; % output path
 nonfac_path = [top_path '02_NonFacultyUsers']; % location of non-faculty-users list
 
+%%% Split apart 
+[pathstr,fname,ext] = fileparts(fname_in);
+if strcmpi(fname(1:3),'MCM')~=1; % if only the number is given (e.g. '62198'), then build the entire string.
+    file_ver = fname; % The file version number
+    fname_in = ['MCM_VIVO_ALL_FACULTY-' fname '-clean.tsv'];
+else
+    if isempty(ext)==1  % Fix an error where full filename is given, but the extension is not included (e.g. 'vivo_prepare_elementsHR('MCM_VIVO_ALL_FACULTY-62847-clean');
+        fname_in = [fname '.tsv'];
+    end
+    % extract the file version number
+    dashes = strfind(fname,'-');
+    file_ver = fname(dashes(1)+1:dashes(2)-1);
+end
 %% Load additional files
 %%% Load the positions lookup table
 fid_pos = fopen([lut_path '/vivo_lookup_positions.tsv'],'r');
@@ -161,6 +172,9 @@ tmp_out = sprintf('%s\t',hr_headers{1:end-1});
 tmp_out = [tmp_out hr_headers{end}];
 fprintf(fid_issues, '%s\n',tmp_out);
 
+%%% And create a file to track what file was run when:
+fid_history = fopen([output_path '/McM_HR_import_creation_tracker.tsv'],'a');
+
 
 %% First cleanup -- remove any rows where position rank is -999
 dw_ranks = NaN.*ones(size(dw,1),1);
@@ -287,6 +301,7 @@ if size(ind_noID,1)>0
     dw_nf(ind_noID,:)=[];
 end
 
+try
 for i = 1:1:size(dw_nf,1);
     tmp_output = dw_nf(i,:);
     for k = 1:1:size(dw2hr,1)
@@ -329,8 +344,17 @@ for i = 1:1:size(dw_nf,1);
         clear tmp_print;
     end
 end
-
+%%% Write a record to the tracker file:
+fprintf(fid_history,'%s\t',datestr(now,30));
+fprintf(fid_history,'%s\t',file_ver);
+fprintf(fid_history,'%s\n','1');
+catch
+fprintf(fid_history,'%s\t',datestr(now,30));
+fprintf(fid_history,'%s\t',file_ver);
+fprintf(fid_history,'%s\n','-1');
+end
 %% Close the files:
 fclose(fid_out);
 fclose(fid_out2);
 fclose(fid_issues);
+fclose(fid_history);
