@@ -144,17 +144,21 @@ end
 %% Load the output file:
 fid_out =fopen([output_path '/McM_HR_import_current.tsv'],'w');
 hr_headers = dw2hr(:,1);
-tmp_out = sprintf('%s\t',hr_headers{:});
+tmp_out = sprintf('%s\t',hr_headers{1:end-1});
+tmp_out = [tmp_out hr_headers{end}];
 fprintf(fid_out, '%s\n',tmp_out);
 
 fid_out2 =fopen([output_path '/McM_HR_import_current.csv'],'w');
 hr_headers = dw2hr(:,1);
-tmp_out = sprintf('%s,',hr_headers{:});
+tmp_out = sprintf('%s,',hr_headers{1:end-1});
+tmp_out = [tmp_out hr_headers{end}];
 fprintf(fid_out2, '%s\n',tmp_out);
 
 %%% Also create an output file to record problem records:
 fid_issues = fopen([output_path '/Elements_export_issues.tsv'],'w');
-tmp_out = sprintf('%s\t',headers{:});
+% tmp_out = sprintf('%s\t',headers{:});
+tmp_out = sprintf('%s\t',hr_headers{1:end-1});
+tmp_out = [tmp_out hr_headers{end}];
 fprintf(fid_issues, '%s\n',tmp_out);
 
 
