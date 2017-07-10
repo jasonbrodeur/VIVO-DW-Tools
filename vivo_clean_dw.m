@@ -5,8 +5,8 @@ function [] = vivo_clean_dw(fname_in)
 % Mosaic DW data exports.
 %%% Input:
 % The required input is a comma-separated version of the data extract.
-% The filename (as a string) is used as an input argument.
-% example: vivo_clean_dw('MCM_VIVO_ALL_FACULTY-46514.csv');
+% The filename (as a string or integer version) is used as an input argument.
+% example: vivo_clean_dw('MCM_VIVO_ALL_FACULTY-46514.csv') or vivo_clean_dw('46514') or vivo_clean_dw(46514);
 % The script also loads in tab-separated lookup table files for faculty
 % positions, departments, faculties and buildings.
 %%% Outputs:
@@ -16,7 +16,15 @@ function [] = vivo_clean_dw(fname_in)
 %
 % Created January 2017 by JJB.
 
-%%% Set the starting path:
+%% Update log:
+%%% 2017-07-10
+% 1. You can now run a selected version of the DW data (e.g. 66128) by simply using this value as an input, so:
+% vivo_clean_dw('MCM_VIVO_ALL_FACULTY-62847.csv')
+% vivo_clean_dw('62847') or 
+% vivo_clean_dw(62847);
+% are all equivalent
+
+%% Set the starting path:
 if ispc==1
     if exist('D:/Seafile/VIVO_Secure_Data/','dir')==7
     top_path = 'D:/Seafile/VIVO_Secure_Data/';
@@ -32,10 +40,30 @@ lut_path = [top_path 'VIVO-DW-Tools/lookup_tables']; % lookup table path
 load_path = [top_path '01_DW_Extracted']; % location of 'raw' data file
 output_path = [top_path '02_DW_Cleaned']; % location of 'raw' data file
 
+%% Ensure that we are referring to the proper input file; allow for various ways of inputting file to process.
+%%% If a number is inputted (e.g. 66128) instead of a string, transform to string.
+if ischar(fname_in)~=1
+    fname_in = num2str(fname_in);
+end
+
 % Separate filename into differnt parts:
 [pathstr,fname,ext] = fileparts(fname_in);
 if isempty(pathstr)==1
     pathstr = load_path;
+end
+
+%%% ensure that fname_in contains the entire filename (if, e.g. only the version number is given)
+if strcmpi(fname(1:3),'MCM')~=1; % if only the number is given (e.g. '62198'), then build the entire string.
+    fname = ['MCM_VIVO_ALL_FACULTY-' fname '.csv'];
+    ext = '.csv';
+else
+    if isempty(ext)==1  % Fix an error where full filename is given, but the extension is not included (e.g. 'vivo_prepare_elementsHR('MCM_VIVO_ALL_FACULTY-62847-clean');
+        fname = [fname '.csv'];
+        ext = '.csv';
+    end
+    % extract the file version number
+%     dashes = strfind(fname,'-');
+%     file_ver = fname(dashes(1)+1:dashes(2)-1);
 end
 
 %% Open the DW data export, read it and organize data into a cell array
@@ -52,7 +80,7 @@ end
 %%fclose(fid);
 
 %%% Figure out if we're loading a tsv or csv file:
-fid = fopen([pathstr '/' fname_in],'r');
+fid = fopen([pathstr '/' fname],'r');
 tline = fgetl(fid);
 frewind(fid);
 switch ext
@@ -113,7 +141,7 @@ end
 %%% Structure of the name correction file:
 % col1 = macid; col2 = old fname; col3 = old mname; col4 = old lname;
 % col5 = new fname; col6 = new mname; col7 = new lname;
-fprintf(fid_report,'%s\n','IDs requiring first name / middle name / last name cleanup:')
+fprintf(fid_report,'%s\n','IDs requiring first name / middle name / last name cleanup (as listed in \lookup_tables\name_corrections.tsv):')
 
 [fid_fixes, errmsg] = fopen([lut_path '/name_corrections.tsv'],'r');
 tline = fgetl(fid_fixes);
@@ -179,31 +207,31 @@ end
 extra_space = strfind(dw(:,fname_col),' - ');
 ind=find(cellfun('isempty',extra_space)==0);
 for i = 1:1:length(ind)
-    fprintf(fid_report,'%s\n',dw{ind(i),1});
+    fprintf(fid_report,'%s\n',[dw{ind(i),1} ' - remove spaces around hyphen']);
     dw{ind(i),fname_col} = strrep(dw{ind(i),fname_col},' - ','-');
 end
+
 % remove extra space on left side of hyphen:
 extra_space = strfind(dw(:,fname_col),'- ');
 ind=find(cellfun('isempty',extra_space)==0);
 for i = 1:1:length(ind)
-    fprintf(fid_report,'%s\n',dw{ind(i),1});
+    fprintf(fid_report,'%s\n',[dw{ind(i),1} ' - remove spaces around hyphen']);
     dw{ind(i),fname_col} = strrep(dw{ind(i),fname_col},'- ','-');
 end
 % remove extra space on right side of hyphen:
 extra_space = strfind(dw(:,fname_col),' -');
 ind=find(cellfun('isempty',extra_space)==0);
 for i = 1:1:length(ind)
-    fprintf(fid_report,'%s\n',dw{ind(i),1});
+    fprintf(fid_report,'%s\n',[dw{ind(i),1} ' - remove spaces around hyphen']);
     dw{ind(i),fname_col} = strrep(dw{ind(i),fname_col},' -','-');
 end
 % remove two spaces between names:
 extra_space = strfind(dw(:,fname_col),'  ');
 ind=find(cellfun('isempty',extra_space)==0);
 for i = 1:1:length(ind)
-    fprintf(fid_report,'%s\n',dw{ind(i),1});
+    fprintf(fid_report,'%s\n',[dw{ind(i),1} ' - remove double spaces between names']);
     dw{ind(i),fname_col} = strrep(dw{ind(i),fname_col},'  ',' ');
 end
-
 
 %%% Flag any first name with a hyphen for later:
 hyphens = strfind(dw(:,fname_col),'-');
@@ -365,28 +393,28 @@ fprintf(fid_report,'%s\n','IDs requiring last name cleanup');
 extra_space = strfind(dw(:,lname_col),' - ');
 ind=find(cellfun('isempty',extra_space)==0);
 for i = 1:1:length(ind)
-    fprintf(fid_report,'%s\n',dw{ind(i),1});
+    fprintf(fid_report,'%s\n',[dw{ind(i),1} ' - remove spaces around hyphen']);
     dw{ind(i),lname_col} = strrep(dw{ind(i),lname_col},' - ','-');
 end
 % remove extra space on left side of hyphen:
 extra_space = strfind(dw(:,lname_col),'- ');
 ind=find(cellfun('isempty',extra_space)==0);
 for i = 1:1:length(ind)
-    fprintf(fid_report,'%s\n',dw{ind(i),1});
+    fprintf(fid_report,'%s\n',[dw{ind(i),1} ' - remove spaces around hyphen']);
     dw{ind(i),lname_col} = strrep(dw{ind(i),lname_col},'- ','-');
 end
 % remove extra space on right side of hyphen:
 extra_space = strfind(dw(:,lname_col),' -');
 ind=find(cellfun('isempty',extra_space)==0);
 for i = 1:1:length(ind)
-    fprintf(fid_report,'%s\n',dw{ind(i),1});
+    fprintf(fid_report,'%s\n',[dw{ind(i),1} ' - remove spaces around hyphen']);
     dw{ind(i),lname_col} = strrep(dw{ind(i),lname_col},' -','-');
 end
 % remove two spaces between names:
 extra_space = strfind(dw(:,lname_col),'  ');
 ind=find(cellfun('isempty',extra_space)==0);
 for i = 1:1:length(ind)
-    fprintf(fid_report,'%s\n',dw{ind(i),1});
+    fprintf(fid_report,'%s\n',[dw{ind(i),1} ' - remove double spaces']);
     dw{ind(i),lname_col} = strrep(dw{ind(i),lname_col},'  ',' ');
 end
 
