@@ -29,7 +29,7 @@ if ischar(v2)~=1
     v2 = num2str(v2);
 end
 
-% arrange it so that v1 is always the older version.
+% arrange it so that v1 is always the older version (lower number).
 if str2num(v1) > str2num(v2)
    tmp = v1;
    v1 = v2;
