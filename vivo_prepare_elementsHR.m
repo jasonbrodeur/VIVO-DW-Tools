@@ -46,6 +46,10 @@ load_path = [top_path '02_DW_Cleaned']; % cleaned data path
 output_path = [top_path '03_Processed_For_Elements']; % output path
 nonfac_path = [top_path '02_NonFacultyUsers']; % location of non-faculty-users list
 
+%%% declare the path to the 'Data_Import' folder (used at the end of the script).
+ind0 = strfind(top_path,'VIVO_Secure');
+data_import_path = [top_path(1:ind0-1) 'Data_Import/01_To_Be_Processed'];
+
 %%% If a number is inputted (e.g. 66128) instead of a string, transform to string.
 if ischar(fname_in)~=1
     fname_in = num2str(fname_in);
@@ -128,7 +132,7 @@ initials_col = find(strcmp(headers,'Initials')==1);
 knownas_col = find(strcmp(headers,'KnownAs')==1);
 suffix_col = find(strcmp(headers,'Suffix')==1);
 dept_col = find(strcmp(headers,'Department')==1);
-
+emplclass_col = find(strcmp(headers,'Empl Class')==1);
 fac_col = find(strcmp(headers,'Faculty')==1);
 
 secpos_col = [size(dw,2)+1:2:size(dw,2)+10]';
@@ -158,6 +162,12 @@ frewind(fid_nf);
 numcols2 = length(regexp(tline,','))+1;
 formatspec = repmat('%s',1,numcols2);
 C = textscan(fid_nf,formatspec,'Delimiter',',');
+% Remove quotation marks (causes issues):
+for pp = 1:1:size(C,2)
+        isString = cellfun('isclass', C{1,pp}, 'char');
+        C{1,pp}(isString) = strrep(C{1,pp}(isString), '"', '');
+end
+
 fclose(fid_nf);
 
 %%% Extract headers - compare to header file for faculty users
@@ -169,10 +179,10 @@ for i = 1:1:numcols2
     dw_nf(:,i) = C{1,i}(2:end,1);
 end
 clear C;
-if sum(match_flag,1)~=numcols2
-    disp('The header file for the Faculty (DW) data does not match with that for the non-faculty users. Inspect and fix this before proceeding');
-    return;
-end
+% if sum(match_flag,1)~=numcols2
+%     disp('The header file for the Faculty (DW) data does not match with that for the non-faculty users. Inspect and fix this before proceeding');
+%     return;
+% end
 %% Load the output file:
 fid_out =fopen([output_path '/McM_HR_import_current.tsv'],'w');
 hr_headers = dw2hr(:,1);
@@ -187,9 +197,9 @@ tmp_out = [tmp_out hr_headers{end}];
 fprintf(fid_out2, '%s\n',tmp_out);
 
 %%% Also create an output file to record problem records:
-fid_issues = fopen([output_path '/Elements_export_issues.tsv'],'w');
+fid_issues = fopen([output_path '/Elements_export_issues-' file_ver '.tsv'],'w');
 % tmp_out = sprintf('%s\t',headers{:});
-tmp_out = sprintf('%s\t',hr_headers{1:end-1});
+tmp_out = sprintf('%s\t',headers{1:end-1});
 tmp_out = [tmp_out hr_headers{end}];
 fprintf(fid_issues, '%s\n',tmp_out);
 
@@ -248,12 +258,22 @@ try
                     if sum(ind3)==1 %if there's one row with a match, we're all set.
                         tmp(ind2(ind3==0),:) = [];
                         tmp_ranks(ind2(ind3==0),:) = [];
-                    elseif sum(ind3)>1
+                    elseif sum(ind3)>1 % if there's more than one row with a match, select the one that doesn't have an employee class of LT3.
                         tmp(ind2(ind3==0),:) = [];
                         tmp_ranks(ind2(ind3==0),:) = [];
-                        disp(['Multiple rows with McMaster email address and same position number for: ' tmp{1,id_col} ', ' tmp{1,fname_col} ' ' tmp{1,lname_col}]);
-                        for tt = 1:1:size(tmp,1)
-                            fprintf(fid_issues,'%s\n',sprintf('%s\t',tmp{tt,:}));
+                        disp(['Multiple rows with McMaster email address for: ' tmp{1,id_col} ', ' tmp{1,fname_col} ' ' tmp{1,lname_col}]);
+                        ind4 = strcmp('LT3',tmp(ind2(ind3),emplclass_col)); % look for a match in the "Employee Class" column to anything but "LT3"
+                        tmp_ind=ones(length(ind4),1); tmp_ind(ind4==1,1)=0; ind4 = tmp_ind; clear tmp_ind;
+                        if sum(ind4)==1 %if there's one row with a match, we're all set.
+                            tmp(ind2(ind3(ind4==0)),:) = [];
+                            tmp_ranks(ind2(ind3(ind4==0)),:) = [];
+                        elseif sum(ind4)>1 
+                            tmp(ind2(ind3(ind4==0)),:) = [];
+                            tmp_ranks(ind2(ind3(ind4==0)),:) = [];
+                            disp(['Multiple rows with McMaster email address and same position number for: ' tmp{1,id_col} ', ' tmp{1,fname_col} ' ' tmp{1,lname_col}]);
+                            for tt = 1:1:size(tmp,1)
+                                fprintf(fid_issues,'%s\n',sprintf('%s\t',tmp{tt,:}));
+                            end
                         end
                     else %
                         disp(['Could not find McMaster email address for: ' tmp{1,id_col} ', ' tmp{1,fname_col} ' ' tmp{1,lname_col}]);
@@ -327,9 +347,21 @@ if size(ind_noID,1)>0
     dw_nf(ind_noID,:)=[];
 end
 
+[unique_emplnum2,ia,ic] = unique(dw_nf(:,id_col));
+dw_nf_tmp = dw_nf(ia,:);
+dw_nf = dw_nf_tmp; clear dw_nf_tmp;
+
 try
     for i = 1:1:size(dw_nf,1);
         tmp_output = dw_nf(i,:);
+        %%% Insert Authenticating Authority information as either 'FHS' (for faculty of health sciences) or 'NONFHS' (for
+            %%% others), according to faculty of primary appointment.
+            switch tmp_output{1,fac_col}
+                case 'Faculty of Health Sciences'
+                    tmp_output{1,auth_col} = 'FHS';
+                otherwise
+                    tmp_output{1,auth_col} = 'NONFHS';
+            end
         for k = 1:1:size(dw2hr,1)
             if k < size(dw2hr,1); formatspec = '%s\t';formatspec2 = '%s,'; else formatspec = '%s\n'; formatspec2 = '%s\n';end
             
@@ -388,3 +420,18 @@ fclose(fid_out);
 fclose(fid_out2);
 fclose(fid_issues);
 fclose(fid_history);
+%% Make a copy of the export file, so that there's a record:
+copyfile([output_path '/McM_HR_import_current.csv'],[output_path '/McM_HR_import_current-' file_ver '.csv']);
+copyfile([output_path '/McM_HR_import_current.tsv'],[output_path '/McM_HR_import_current-' file_ver '.tsv']);
+disp(['Copies of output files created in ' output_path]);
+
+%% Prompt the user to send the HR file over to /Data_Import, if they'd like:
+s = input('Would you like to copy the HR import file to \Data_Import\01_To_Be_Processed (y/n)? > ','s');
+if strcmpi(s,'y')==1
+    [status,~,~] = copyfile([output_path '/McM_HR_import_current.csv'],[data_import_path '/McM_HR_import_current.csv']);
+    if status==1
+        disp('File copied to \Data_Import\01_To_Be_Processed');
+    else
+        disp('Something went wrong trying to copy to \Data_Import\01_To_Be_Processed');
+    end
+end

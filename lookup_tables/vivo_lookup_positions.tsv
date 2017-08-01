@@ -1,56 +1,61 @@
-name_listed	name_vivo	display_rank	notes	old_ranks
-Adjunct Assistant Professor	Adjunct Assistant Professor	2.5		2
-Adjunct Associate Professor	Adjunct Associate Professor	2.5		2
-Adjunct Professor	Adjunct Professor	2.5		2
-AIC PROFESSOR	AIC Professor	2.4		3
-AREA CHAIR	Area Chair	2.1		2
-Assistant Clinical Professor	Assistant Clinical Professor	1.21		1
-Assistant Clinical Professor (	Assistant Clinical Professor (Adjunct)	1.5		2
-ASSISTANT DIRECTOR	Assistant Director	2.2		2
-ASSISTANT PROFESSOR	Assistant Professor	1.2		1
-Assistant Professor	Assistant Professor	1.2		1
-Assistant Professor (Part-Time	Assistant Professor (Part-Time)	1.22		1
-ASSOC VP RESEARCH&INTL AFFAIRS	Associate Vice-President	2		2
-ASSOCIATE CHAIR	Associate Chair	2.1		2
-Associate Clinical Professor	Associate Clinical Professor	1.1		1
-ASSOCIATE DEAN	Associate Dean	2		2
-ASSOCIATE DIRECTOR	Associate Director	2.1		2
-Associate Member	Associate Member	3		3
-ASSOCIATE PROFESSOR	Associate Professor	1.1		1
-Associate Professor	Associate Professor	1.1		1
-Associate Professor (Part-Time	Associate Professor (Part-Time)	1.11		1
-ASSOCIATE VICE-PRESIDENT	Associate Vice-President	2		2
-CANADA RESEARCH CHAIR	Canada Research Chair	2.2		2
-CANADA RESEARCH CHAIR TIER I	Canada Research Chair Tier I	2.2		2
-CANADA RESEARCH CHAIR TIER II	Canada Research Chair Tier II	2.2		2
-CHAIR	Chair	2.1		2
-CHAIR IN MASONRY DESIGN	Chair in Masonry Design	2.1		2
-Clinical Lecturer	Clinical Lecturer	1.4		1
-Clinical Professor	Clinical Professor	1		1
-CLINICAL SCHOLAR	Clinical Scholar	1.4		1
-DEAN	Dean	2		2
-DEPARTMENT CHAIR	Department Chair	2.1		2
-DIRECTOR	Director	2.1		2
-Distinguished University Profe	Distinguished University Professor	2.3		2
-ENDOWED CHAIR	Endowed Chair	2.3		2
-Gradual Return to Work	Gradual Return to Work	-999	should be excluded	-999
-Industry Professor	Industry Professor	1.2		1
-Joint Appointment	Joint Appointment	3		3
-LECTURER	Lecturer	1.4		1
-Lecturer (Adjunct)	Lecturer (Adjunct)	2.5		2
-Lecturer (Part-Time)	Lecturer (Part-Time)	1.5		2
-PROFESSOR	Professor	1		1
-Professor	Professor	1		1
-Professor (Part-Time)	Professor (Part-Time)	1.01		1
-Professor Emeritus	Professor Emeritus	2.1		2
-PROGRAM CHAIR	Program Chair	2.1		2
-Program Coordinator	Program Coordinator	2.2		2
-PROGRAM DIRECTOR	Program Director	2.1		2
-SENATOR WILLIAM MCMASTER CHAIR	Senator William McMaster Chair	2.2		3
-University Scholar	University Scholar	3		3
+"name_listed"	"name_vivo"	"display_rank"	"notes"	"old_ranks"
+"Adjunct Assistant Professor"	"Adjunct Assistant Professor"	2.5		2
+"Adjunct Associate Professor"	"Adjunct Associate Professor"	2.5		2
+"Adjunct Professor"	"Adjunct Professor"	2.5		2
+"AIC PROFESSOR"	"AIC Professor"	2.4		3
+"AREA CHAIR"	"Area Chair"	2.1		2
+"Assistant Clinical Professor"	"Assistant Clinical Professor"	1.21		1
+"Assistant Clinical Professor ("	"Assistant Clinical Professor (Adjunct)"	1.5		2
+"ASSISTANT DIRECTOR"	"Assistant Director"	2.2		2
+"ASSISTANT PROFESSOR"	"Assistant Professor"	1.2		1
+"Assistant Professor"	"Assistant Professor"	1.2		1
+"Assistant Professor (Part-Time"	"Assistant Professor (Part-Time)"	1.22		1
+"ASSOC VP RESEARCH&INTL AFFAIRS"	"Associate Vice-President"	2		2
+"ASSOCIATE CHAIR"	"Associate Chair"	2.1		2
+"Associate Clinical Professor"	"Associate Clinical Professor"	1.1		1
+"ASSOCIATE DEAN"	"Associate Dean"	2		2
+"ASSOCIATE DIRECTOR"	"Associate Director"	2.1		2
+"Associate Member"	"Associate Member"	3		3
+"ASSOCIATE PROFESSOR"	"Associate Professor"	1.1		1
+"Associate Professor"	"Associate Professor"	1.1		1
+"Associate Professor (Part-Time"	"Associate Professor (Part-Time)"	1.11		1
+"ASSOCIATE VICE-PRESIDENT"	"Associate Vice-President"	2		2
+"CANADA RESEARCH CHAIR"	"Canada Research Chair"	2.2		2
+"CANADA RESEARCH CHAIR TIER I"	"Canada Research Chair Tier I"	2.2		2
+"CANADA RESEARCH CHAIR TIER II"	"Canada Research Chair Tier II"	2.2		2
+"CHAIR"	"Chair"	2.1		2
+"CHAIR IN MASONRY DESIGN"	"Chair in Masonry Design"	2.1		2
+"Clinical Lecturer"	"Clinical Lecturer"	1.4		1
+"Clinical Professor"	"Clinical Professor"	1		1
+"CLINICAL SCHOLAR"	"Clinical Scholar"	1.4		1
+"DEAN"	"Dean"	2		2
+"DEPARTMENT CHAIR"	"Department Chair"	2.1		2
+"DIRECTOR"	"Director"	2.1		2
+"Distinguished University Profe"	"Distinguished University Professor"	2.3		2
+"ENDOWED CHAIR"	"Endowed Chair"	2.3		2
+"Gradual Return to Work"	"Gradual Return to Work"	-999	"should be excluded"	-999
+"Industry Professor"	"Industry Professor"	1.2		1
+"Joint Appointment"	"Joint Appointment"	3		3
+"LECTURER"	"Lecturer"	1.4		1
+"Lecturer (Adjunct)"	"Lecturer (Adjunct)"	2.5		2
+"Lecturer (Part-Time)"	"Lecturer (Part-Time)"	1.5		2
+"PROFESSOR"	"Professor"	1		1
+"Professor"	"Professor"	1		1
+"Professor (Part-Time)"	"Professor (Part-Time)"	1.01		1
+"Professor Emeritus"	"Professor Emeritus"	2.1		2
+"PROGRAM CHAIR"	"Program Chair"	2.1		2
+"Program Coordinator"	"Program Coordinator"	2.2		2
+"PROGRAM DIRECTOR"	"Program Director"	2.1		2
+"SENATOR WILLIAM MCMASTER CHAIR"	"Senator William McMaster Chair"	2.2		3
+"University Scholar"	"University Scholar"	3		3
 "VICE-PRESIDENT, RESEARCH"	"Vice-President, Research"	2		2
-Visiting Assistant Professor	Visiting Assistant Professor	4		4
-Visiting Associate Professor	Visiting Associate Professor	4		4
-Visiting Lecturer	Visiting Lecturer	4		4
-Visiting Professor	Visiting Professor	4		4
-WORK/STUDY STUDENT	Work Study Student	-999	should be excluded	-999
+"Visiting Assistant Professor"	"Visiting Assistant Professor"	4		4
+"Visiting Associate Professor"	"Visiting Associate Professor"	4		4
+"Visiting Lecturer"	"Visiting Lecturer"	4		4
+"Visiting Professor"	"Visiting Professor"	4		4
+"WORK/STUDY STUDENT"	"Work Study Student"	-999	"should be excluded"	-999
+"ASSOCIATE DEAN RESEARCH"	"Associate Dean, Research"	2		2
+"Vice-Provost & Dean of Grad St"	"Vice-Provost & Dean of Graduate Studies"	2		2
+"Vice-Provost (Faculty)"	"Vice-Provost (Faculty)"	2		2
+"Vice-Provost (Int'l Affairs)"	"Vice-Provost (International Affairs)"	2		2
+"Vice-Provost (Teach&Learn)"	"Vice-Provost (Teaching & Learning)"	2		2

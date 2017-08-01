@@ -65,7 +65,7 @@ else
 %     dashes = strfind(fname,'-');
 %     file_ver = fname(dashes(1)+1:dashes(2)-1);
 end
-
+fname_out = fname(1:end-4);
 %% Open the DW data export, read it and organize data into a cell array
 %%fid = fopen(fname_in,'r');
 %%tline = fgetl(fid);
@@ -116,7 +116,7 @@ for i = 1:1:numcols2
 end
 
 %%%Open a document so that we can track bad data. Mark it with a timestamp:
-fid_report = fopen([output_path '/' fname '-datareport_' datestr(now,30) '.txt'],'w');
+fid_report = fopen([output_path '/' fname_out '-datareport_' datestr(now,30) '.txt'],'w');
 
 % Find columns for macid, first and last names:
 macid_col = find(strcmp(headers,'MAC ID')==1);
@@ -156,12 +156,18 @@ numcols = length(regexp(tline,'\t'))+1;
 fclose(fid_fixes);   
 for t = 1:1:size(D{1,1},1)
    ind_repl = find(strcmp(D{1,1}{t,1},dw(:,macid_col))==1); 
+   if isempty(ind_repl)==1
+       str = ['Could not find MacID ' D{1,1}{t,1} 'in DW file -- skipping'];
+       disp(str);
+       fprintf(fid_report,'%s\n',str);
+   else
       for t2 = 1:1:length(ind_repl)
       dw{ind_repl(t2),fname_col} = D{1,5}{t,1};
       dw{ind_repl(t2),mname_col} = D{1,6}{t,1};
       dw{ind_repl(t2),lname_col} = D{1,7}{t,1};
       end
       fprintf(fid_report,'%s\n',dw{ind_repl(1),1});
+   end
 end
 
 clear D;        
@@ -651,7 +657,8 @@ end
 
 %% If any records have a MacID of '-', remove them from the data, write them to a new file, and list them in the problem report:
 ind_nomacid = find(strcmp('-',dw(:,macid_col))==1);
-fid_nomacid = fopen([output_path '/' fname '_noMacID.tsv'],'w');
+if ~isempty(ind_nomacid)==1
+fid_nomacid = fopen([output_path '/' fname_out '_noMacID.tsv'],'w');
 tmp = sprintf('%s\t',headers{:});
 fprintf(fid_nomacid,'%s\n',tmp);
 fprintf(fid_report,'%s\n','Users with no MacID (removed from further processing):')
@@ -662,11 +669,11 @@ for i = 1:1:length(ind_nomacid)
 end
 fclose(fid_nomacid);
 dw(ind_nomacid,:) = [];
-
+end
 %% Close the report, Write the Final Output:
 fclose(fid_report);
 
-fid_out = fopen([output_path '/' fname '-clean.tsv'],'w');
+fid_out = fopen([output_path '/' fname_out '-clean.tsv'],'w');
 tmp = sprintf('%s\t',headers{:});
 fprintf(fid_out,'%s\n',tmp);
 for i = 1:1:length(dw)
