@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<records xmlns="http://www.symplectic.co.uk/hrimporter">
+	<record>
+		<field name="[Title]">Dr.</field>
+		<field name="[Initials]">A</field>
+		<field name="[FirstName]">Albert</field>
+		<field name="[LastName]">Einstein</field>
+		<field name="[KnownAs]">Al</field>
+		<field name="[Suffix]"></field>
+		<field name="[Email]">aeinstein@lit.ac.uk</field>
+		<field name="[AuthenticatingAuthority]">LITAuth</field>
+		<field name="[Username]">aeinstein</field>
+		<field name="[Proprietary_ID]">1122334455</field>
+		<field name="[PrimaryGroupDescriptor]">Faculty of Natural Sciences</field>
+		<field name="[IsAcademic]">true</field>
+		<field name="[IsCurrent]">false</field>
+		<field name="[LoginAllowed]">false</field>
+		<field name="[ArriveDate]">1935-03-05</field>
+		<field name="[LeaveDate]">1955-04-18</field>
+		<field name="[Department]">Physics</field>
+		<field name="[Position]">Professor</field>
+		<field name="[Generic01]">Generic1</field>
+	</record>
+	<record>
+		<field name="[Title]">Dr.</field>
+		<field name="[Initials]">CR</field>
+		<field name="[FirstName]">Charles</field>
+		<field name="[LastName]">Darwin</field>
+		<field name="[KnownAs]"></field>
+		<field name="[Suffix]"></field>
+		<field name="[Email]">cdarwin@lit.ac.uk</field>
+		<field name="[AuthenticatingAuthority]">LITAuth</field>
+		<field name="[Username]">cdarwin</field>
+		<field name="[Proprietary_ID]">2233445566</field>
+		<field name="[PrimaryGroupDescriptor]">Faculty of Natural Sciences</field>
+		<field name="[IsAcademic]">true</field>
+		<field name="[IsCurrent]">false</field>
+		<field name="[LoginAllowed]">false</field>
+		<field name="[ArriveDate]">1860-01-01</field>
+		<field name="[LeaveDate]">1882-04-19</field>
+		<field name="[Department]">Geology</field>
+		<field name="[Position]">Researcher</field>
+		<field name="[Generic02]">Generic2</field>
+	</record>
+	<record>
+		<field name="[Title]">Mr.</field>
+		<field name="[Initials]">JCWTM</field>
+		<field name="[FirstName]">Johannes</field>
+		<field name="[LastName]">Mozart</field>
+		<field name="[KnownAs]">Wolfgang Amadeus</field>
+		<field name="[Suffix]"></field>
+		<field name="[Email]">wmozart@lit.ac.uk</field>
+		<field name="[AuthenticatingAuthority]">LITAuth</field>
+		<field name="[Username]">wmozart</field>
+		<field name="[Proprietary_ID]">3344556677</field>
+		<field name="[PrimaryGroupDescriptor]">Faculty of Music</field>
+		<field name="[IsAcademic]">false</field>
+		<field name="[IsCurrent]">false</field>
+		<field name="[LoginAllowed]">false</field>
+		<field name="[ArriveDate]">1761-05-18</field>
+		<field name="[LeaveDate]">1791-12-05</field>
+		<field name="[Department]">Classical Music</field>
+		<field name="[Position]">Composer</field>
+		<field name="[Generic49]">Generic49</field>
+	</record>
+	<record>
+		<field name="[Title]">Dr.</field>
+		<field name="[Initials]">AM</field>
+		<field name="[FirstName]">Alan</field>
+		<field name="[LastName]">Turing</field>
+		<field name="[KnownAs]"></field>
+		<field name="[Suffix]">OBE, FRS</field>
+		<field name="[Email]">aturing@lit.ac.uk</field>
+		<field name="[AuthenticatingAuthority]">LITAuth</field>
+		<field name="[Username]">aturing</field>
+		<field name="[Proprietary_ID]">4455667788</field>
+		<field name="[PrimaryGroupDescriptor]">Faculty of Computer Science</field>
+		<field name="[IsAcademic]">true</field>
+		<field name="[IsCurrent]">false</field>
+		<field name="[LoginAllowed]">false</field>
+		<field name="[ArriveDate]">1950-08-28</field>
+		<field name="[LeaveDate]">1954-06-23</field>
+		<field name="[Department]">Cryptanalysis</field>
+		<field name="[Position]">Researcher</field>
+		<field name="[Generic50]">Generic50</field>
+	</record>
+</records>

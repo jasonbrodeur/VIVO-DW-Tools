@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns="http://www.symplectic.co.uk/hrimporter" targetNamespace="http://www.symplectic.co.uk/hrimporter" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:element name="records">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="record" type="record" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="record">
+		<xs:sequence>
+			<xs:element name="field" type="field" minOccurs="0" maxOccurs="unbounded">
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="field">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="name" use="required" type="label-name"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:simpleType name="label-name">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="[Proprietary_ID]"/>
+			<xs:enumeration value="[Title]"/>
+			<xs:enumeration value="[Initials]"/>
+			<xs:enumeration value="[FirstName]"/>
+			<xs:enumeration value="[LastName]"/>
+			<xs:enumeration value="[KnownAs]"/>
+			<xs:enumeration value="[Suffix]"/>
+			<xs:enumeration value="[Email]"/>
+			<xs:enumeration value="[Username]"/>
+			<xs:enumeration value="[PrimaryGroupDescriptor]"/>
+			<xs:enumeration value="[AuthenticatingAuthority]"/>
+			<xs:enumeration value="[IsCurrent]"/>
+			<xs:enumeration value="[LoginAllowed]"/>
+			<xs:enumeration value="[ArriveDate]"/>
+			<xs:enumeration value="[LeaveDate]"/>
+			<xs:enumeration value="[IsAcademic]"/>
+			<xs:enumeration value="[Position]"/>
+			<xs:enumeration value="[Department]"/>
+			<xs:enumeration value="[Generic01]"/>
+			<xs:enumeration value="[Generic02]"/>
+			<xs:enumeration value="[Generic03]"/>
+			<xs:enumeration value="[Generic04]"/>
+			<xs:enumeration value="[Generic05]"/>
+			<xs:enumeration value="[Generic06]"/>
+			<xs:enumeration value="[Generic07]"/>
+			<xs:enumeration value="[Generic08]"/>
+			<xs:enumeration value="[Generic09]"/>
+			<xs:enumeration value="[Generic10]"/>
+			<xs:enumeration value="[Generic11]"/>
+			<xs:enumeration value="[Generic12]"/>
+			<xs:enumeration value="[Generic13]"/>
+			<xs:enumeration value="[Generic14]"/>
+			<xs:enumeration value="[Generic15]"/>
+			<xs:enumeration value="[Generic16]"/>
+			<xs:enumeration value="[Generic17]"/>
+			<xs:enumeration value="[Generic18]"/>
+			<xs:enumeration value="[Generic19]"/>
+			<xs:enumeration value="[Generic20]"/>
+			<xs:enumeration value="[Generic21]"/>
+			<xs:enumeration value="[Generic22]"/>
+			<xs:enumeration value="[Generic23]"/>
+			<xs:enumeration value="[Generic24]"/>
+			<xs:enumeration value="[Generic25]"/>
+			<xs:enumeration value="[Generic26]"/>
+			<xs:enumeration value="[Generic27]"/>
+			<xs:enumeration value="[Generic28]"/>
+			<xs:enumeration value="[Generic29]"/>
+			<xs:enumeration value="[Generic30]"/>
+			<xs:enumeration value="[Generic31]"/>
+			<xs:enumeration value="[Generic32]"/>
+			<xs:enumeration value="[Generic33]"/>
+			<xs:enumeration value="[Generic34]"/>
+			<xs:enumeration value="[Generic35]"/>
+			<xs:enumeration value="[Generic36]"/>
+			<xs:enumeration value="[Generic37]"/>
+			<xs:enumeration value="[Generic38]"/>
+			<xs:enumeration value="[Generic39]"/>
+			<xs:enumeration value="[Generic40]"/>
+			<xs:enumeration value="[Generic41]"/>
+			<xs:enumeration value="[Generic42]"/>
+			<xs:enumeration value="[Generic43]"/>
+			<xs:enumeration value="[Generic44]"/>
+			<xs:enumeration value="[Generic45]"/>
+			<xs:enumeration value="[Generic46]"/>
+			<xs:enumeration value="[Generic47]"/>
+			<xs:enumeration value="[Generic48]"/>
+			<xs:enumeration value="[Generic49]"/>
+			<xs:enumeration value="[Generic50]"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>
