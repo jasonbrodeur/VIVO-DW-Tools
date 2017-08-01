@@ -1,0 +1,7 @@
+added the contents of ontology_exports to the /home/brodeujj/karma/preloaded-ontologies directory
+
+In Karma: 
+1) Created new column "FullName". Concatenated First and Last names by:
+a = getValue("FirstName")
+b = getValue("LastName")
+return a + " " + b

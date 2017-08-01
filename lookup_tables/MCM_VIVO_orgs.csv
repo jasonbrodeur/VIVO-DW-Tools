@@ -1,0 +1,80 @@
+Department,dept_id,dept_url,Faculty,fac_id,fac_url,unit_type,is_dept,is_inst,is_centre,is_admin,is_chair,is_other
+Arts & Science,1,http://vivo.mcmaster.ca/individual/org1,AVP FACULTY,1001,http://vivo.mcmaster.ca/individual/org1001,4,0,0,0,1,0,0
+Human Resources & Management,2,http://vivo.mcmaster.ca/individual/org2,DeGroote School of Business,1002,http://vivo.mcmaster.ca/individual/org1002,1,1,0,0,0,0,0
+Marketing,3,http://vivo.mcmaster.ca/individual/org3,DeGroote School of Business,1003,http://vivo.mcmaster.ca/individual/org1003,1,1,0,0,0,0,0
+Information Systems,4,http://vivo.mcmaster.ca/individual/org4,DeGroote School of Business,1004,http://vivo.mcmaster.ca/individual/org1004,1,1,0,0,0,0,0
+Finance & Business Economics,5,http://vivo.mcmaster.ca/individual/org5,DeGroote School of Business,1005,http://vivo.mcmaster.ca/individual/org1005,1,1,0,0,0,0,0
+null,6,http://vivo.mcmaster.ca/individual/org6,DeGroote School of Business,1006,http://vivo.mcmaster.ca/individual/org1006,0,0,0,0,0,0,1
+Operations Management,7,http://vivo.mcmaster.ca/individual/org7,DeGroote School of Business,1007,http://vivo.mcmaster.ca/individual/org1007,1,1,0,0,0,0,0
+Accounting & Financial Management Services,8,http://vivo.mcmaster.ca/individual/org8,DeGroote School of Business,1008,http://vivo.mcmaster.ca/individual/org1008,1,1,0,0,0,0,0
+Strategic Management,9,http://vivo.mcmaster.ca/individual/org9,DeGroote School of Business,1009,http://vivo.mcmaster.ca/individual/org1009,1,1,0,0,0,0,0
+Health Policy and Management,10,http://vivo.mcmaster.ca/individual/org10,DeGroote School of Business,1010,http://vivo.mcmaster.ca/individual/org1010,1,1,0,0,0,0,0
+Chemical Engineering,11,http://vivo.mcmaster.ca/individual/org11,Faculty of Engineering,1011,http://vivo.mcmaster.ca/individual/org1011,1,1,0,0,0,0,0
+Mechanical Engineering,12,http://vivo.mcmaster.ca/individual/org12,Faculty of Engineering,1012,http://vivo.mcmaster.ca/individual/org1012,1,1,0,0,0,0,0
+Civil Engineering,13,http://vivo.mcmaster.ca/individual/org13,Faculty of Engineering,1013,http://vivo.mcmaster.ca/individual/org1013,1,1,0,0,0,0,0
+Electrical and Computer Engineering,14,http://vivo.mcmaster.ca/individual/org14,Faculty of Engineering,1014,http://vivo.mcmaster.ca/individual/org1014,1,1,0,0,0,0,0
+Materials Science and Engineering,15,http://vivo.mcmaster.ca/individual/org15,Faculty of Engineering,1015,http://vivo.mcmaster.ca/individual/org1015,1,1,0,0,0,0,0
+Engineering Physics,16,http://vivo.mcmaster.ca/individual/org16,Faculty of Engineering,1016,http://vivo.mcmaster.ca/individual/org1016,1,1,0,0,0,0,0
+Computing and Software,17,http://vivo.mcmaster.ca/individual/org17,Faculty of Engineering,1017,http://vivo.mcmaster.ca/individual/org1017,1,1,0,0,0,0,0
+Biomedical Engineering,18,http://vivo.mcmaster.ca/individual/org18,Faculty of Engineering,1018,http://vivo.mcmaster.ca/individual/org1018,1,1,0,0,0,0,0
+Walter G. Booth School of Engineering Practice and Technology,19,http://vivo.mcmaster.ca/individual/org19,Faculty of Engineering,1019,http://vivo.mcmaster.ca/individual/org1019,1,1,0,0,0,0,0
+School of Engineering Technology,20,http://vivo.mcmaster.ca/individual/org20,Faculty of Engineering,1020,http://vivo.mcmaster.ca/individual/org1020,1,1,0,0,0,0,0
+Centre for Emerging Device Technologies,21,http://vivo.mcmaster.ca/individual/org21,Faculty of Engineering,1021,http://vivo.mcmaster.ca/individual/org1021,3,0,0,1,0,0,0
+Pediatrics,22,http://vivo.mcmaster.ca/individual/org22,Faculty of Health Sciences,1022,http://vivo.mcmaster.ca/individual/org1022,1,1,0,0,0,0,0
+Medicine,23,http://vivo.mcmaster.ca/individual/org23,Faculty of Health Sciences,1023,http://vivo.mcmaster.ca/individual/org1023,1,1,0,0,0,0,0
+Family Medicine,24,http://vivo.mcmaster.ca/individual/org24,Faculty of Health Sciences,1024,http://vivo.mcmaster.ca/individual/org1024,1,1,0,0,0,0,0
+Oncology,25,http://vivo.mcmaster.ca/individual/org25,Faculty of Health Sciences,1025,http://vivo.mcmaster.ca/individual/org1025,1,1,0,0,0,0,0
+Nursing,26,http://vivo.mcmaster.ca/individual/org26,Faculty of Health Sciences,1026,http://vivo.mcmaster.ca/individual/org1026,1,1,0,0,0,0,0
+Rehabilitation Science,27,http://vivo.mcmaster.ca/individual/org27,Faculty of Health Sciences,1027,http://vivo.mcmaster.ca/individual/org1027,1,1,0,0,0,0,0
+Psychiatry & Behavioural Neurosciences,28,http://vivo.mcmaster.ca/individual/org28,Faculty of Health Sciences,1028,http://vivo.mcmaster.ca/individual/org1028,1,1,0,0,0,0,0
+Radiology,29,http://vivo.mcmaster.ca/individual/org29,Faculty of Health Sciences,1029,http://vivo.mcmaster.ca/individual/org1029,1,1,0,0,0,0,0
+Surgery,30,http://vivo.mcmaster.ca/individual/org30,Faculty of Health Sciences,1030,http://vivo.mcmaster.ca/individual/org1030,1,1,0,0,0,0,0
+Obstetrics & Gynecology,31,http://vivo.mcmaster.ca/individual/org31,Faculty of Health Sciences,1031,http://vivo.mcmaster.ca/individual/org1031,1,1,0,0,0,0,0
+Anesthesia,32,http://vivo.mcmaster.ca/individual/org32,Faculty of Health Sciences,1032,http://vivo.mcmaster.ca/individual/org1032,1,1,0,0,0,0,0
+"Health Research Methods, Evidence, and Impact",33,http://vivo.mcmaster.ca/individual/org33,Faculty of Health Sciences,1033,http://vivo.mcmaster.ca/individual/org1033,1,1,0,0,0,0,0
+Pathology & Molecular Medicine,34,http://vivo.mcmaster.ca/individual/org34,Faculty of Health Sciences,1034,http://vivo.mcmaster.ca/individual/org1034,1,1,0,0,0,0,0
+Biochemistry & Biomedical Sciences,35,http://vivo.mcmaster.ca/individual/org35,Faculty of Health Sciences,1035,http://vivo.mcmaster.ca/individual/org1035,1,1,0,0,0,0,0
+Ontario Ministry of Health and Long-Term Care Chair in Health Equity,36,http://vivo.mcmaster.ca/individual/org36,Faculty of Health Sciences,1036,http://vivo.mcmaster.ca/individual/org1036,5,0,0,0,0,1,0
+English & Cultural Studies,37,http://vivo.mcmaster.ca/individual/org37,Faculty of Humanities,1037,http://vivo.mcmaster.ca/individual/org1037,1,1,0,0,0,0,0
+School of the Arts,38,http://vivo.mcmaster.ca/individual/org38,Faculty of Humanities,1038,http://vivo.mcmaster.ca/individual/org1038,1,1,0,0,0,0,0
+Philosophy,39,http://vivo.mcmaster.ca/individual/org39,Faculty of Humanities,1039,http://vivo.mcmaster.ca/individual/org1039,1,1,0,0,0,0,0
+History,40,http://vivo.mcmaster.ca/individual/org40,Faculty of Humanities,1040,http://vivo.mcmaster.ca/individual/org1040,1,1,0,0,0,0,0
+Classics,41,http://vivo.mcmaster.ca/individual/org41,Faculty of Humanities,1041,http://vivo.mcmaster.ca/individual/org1041,1,1,0,0,0,0,0
+Linguistics and Languages,42,http://vivo.mcmaster.ca/individual/org42,Faculty of Humanities,1042,http://vivo.mcmaster.ca/individual/org1042,1,1,0,0,0,0,0
+French,43,http://vivo.mcmaster.ca/individual/org43,Faculty of Humanities,1043,http://vivo.mcmaster.ca/individual/org1043,1,1,0,0,0,0,0
+Communication Studies & Multimedia,44,http://vivo.mcmaster.ca/individual/org44,Faculty of Humanities,1044,http://vivo.mcmaster.ca/individual/org1044,1,1,0,0,0,0,0
+Gender Studies and Feminist Research,45,http://vivo.mcmaster.ca/individual/org45,Faculty of Humanities,1045,http://vivo.mcmaster.ca/individual/org1045,1,1,0,0,0,0,0
+Global Television Chair in Communications,46,http://vivo.mcmaster.ca/individual/org46,Faculty of Humanities,1046,http://vivo.mcmaster.ca/individual/org1046,5,0,0,0,0,1,0
+HOPE Chair in Peace and Health,47,http://vivo.mcmaster.ca/individual/org47,Faculty of Humanities,1047,http://vivo.mcmaster.ca/individual/org1047,3,0,0,1,0,0,0
+Wilson Institute for Canadian History,48,http://vivo.mcmaster.ca/individual/org48,Faculty of Humanities,1048,http://vivo.mcmaster.ca/individual/org1048,2,0,1,0,0,0,0
+School of Interdisciplinary Science,49,http://vivo.mcmaster.ca/individual/org49,Faculty of Science,1049,http://vivo.mcmaster.ca/individual/org1049,1,1,0,0,0,0,0
+Geography & Earth Sciences,50,http://vivo.mcmaster.ca/individual/org50,Faculty of Science,1050,http://vivo.mcmaster.ca/individual/org1050,1,1,0,0,0,0,0
+Mathematics and Statistics,51,http://vivo.mcmaster.ca/individual/org51,Faculty of Science,1051,http://vivo.mcmaster.ca/individual/org1051,1,1,0,0,0,0,0
+"Psychology, Neuroscience & Behaviour",52,http://vivo.mcmaster.ca/individual/org52,Faculty of Science,1052,http://vivo.mcmaster.ca/individual/org1052,1,1,0,0,0,0,0
+Chemistry & Chemical Biology,53,http://vivo.mcmaster.ca/individual/org53,Faculty of Science,1053,http://vivo.mcmaster.ca/individual/org1053,1,1,0,0,0,0,0
+Physics & Astronomy,54,http://vivo.mcmaster.ca/individual/org54,Faculty of Science,1054,http://vivo.mcmaster.ca/individual/org1054,1,1,0,0,0,0,0
+Biology,55,http://vivo.mcmaster.ca/individual/org55,Faculty of Science,1055,http://vivo.mcmaster.ca/individual/org1055,1,1,0,0,0,0,0
+Kinesiology,56,http://vivo.mcmaster.ca/individual/org56,Faculty of Science,1056,http://vivo.mcmaster.ca/individual/org1056,1,1,0,0,0,0,0
+Medical Physics and Applied Radiation Sciences,57,http://vivo.mcmaster.ca/individual/org57,Faculty of Science,1057,http://vivo.mcmaster.ca/individual/org1057,1,1,0,0,0,0,0
+Science Central Admin,58,http://vivo.mcmaster.ca/individual/org58,Faculty of Science,1058,http://vivo.mcmaster.ca/individual/org1058,4,0,0,0,1,0,0
+Biointerfaces Institute,59,http://vivo.mcmaster.ca/individual/org59,Faculty of Science,1059,http://vivo.mcmaster.ca/individual/org1059,2,0,1,0,0,0,0
+Origins Institute,60,http://vivo.mcmaster.ca/individual/org60,Faculty of Science,1060,http://vivo.mcmaster.ca/individual/org1060,2,0,1,0,0,0,0
+Science Assoc Dean Academic,61,http://vivo.mcmaster.ca/individual/org61,Faculty of Science,1061,http://vivo.mcmaster.ca/individual/org1061,4,0,0,0,1,0,0
+Religious Studies,62,http://vivo.mcmaster.ca/individual/org62,Faculty of Social Sciences,1062,http://vivo.mcmaster.ca/individual/org1062,1,1,0,0,0,0,0
+Economics,63,http://vivo.mcmaster.ca/individual/org63,Faculty of Social Sciences,1063,http://vivo.mcmaster.ca/individual/org1063,1,1,0,0,0,0,0
+Political Science,64,http://vivo.mcmaster.ca/individual/org64,Faculty of Social Sciences,1064,http://vivo.mcmaster.ca/individual/org1064,1,1,0,0,0,0,0
+Sociology,65,http://vivo.mcmaster.ca/individual/org65,Faculty of Social Sciences,1065,http://vivo.mcmaster.ca/individual/org1065,1,1,0,0,0,0,0
+Anthropology,66,http://vivo.mcmaster.ca/individual/org66,Faculty of Social Sciences,1066,http://vivo.mcmaster.ca/individual/org1066,1,1,0,0,0,0,0
+Labour Studies,67,http://vivo.mcmaster.ca/individual/org67,Faculty of Social Sciences,1067,http://vivo.mcmaster.ca/individual/org1067,1,1,0,0,0,0,0
+"Health, Aging & Society",68,http://vivo.mcmaster.ca/individual/org68,Faculty of Social Sciences,1068,http://vivo.mcmaster.ca/individual/org1068,1,1,0,0,0,0,0
+Social Science Central Administration,69,http://vivo.mcmaster.ca/individual/org69,Faculty of Social Sciences,1069,http://vivo.mcmaster.ca/individual/org1069,4,0,0,0,1,0,0
+Social Work,70,http://vivo.mcmaster.ca/individual/org70,Faculty of Social Sciences,1070,http://vivo.mcmaster.ca/individual/org1070,1,1,0,0,0,0,0
+Indigenous Studies,71,http://vivo.mcmaster.ca/individual/org71,Faculty of Social Sciences,1071,http://vivo.mcmaster.ca/individual/org1071,1,1,0,0,0,0,0
+Institute On Globalization and the Human Condition,72,http://vivo.mcmaster.ca/individual/org72,Faculty of Social Sciences,1072,http://vivo.mcmaster.ca/individual/org1072,2,0,1,0,0,0,0
+Gilbrea Chair in Aging & Mental Health,73,http://vivo.mcmaster.ca/individual/org73,Faculty of Social Sciences,1073,http://vivo.mcmaster.ca/individual/org1073,5,0,0,0,0,1,0
+Gilbrea Centre For Studies In Aging,74,http://vivo.mcmaster.ca/individual/org74,Faculty of Social Sciences,1074,http://vivo.mcmaster.ca/individual/org1074,3,0,0,1,0,0,0
+"Paul R. MacPherson Institute for Leadership, Innovation and Excellence in Teaching",75,http://vivo.mcmaster.ca/individual/org75,"Paul R. MacPherson Institute for Leadership, Innovation and Excellence in Teaching",1075,http://vivo.mcmaster.ca/individual/org1075,2,0,1,0,0,0,0
+Brockhouse Institute for Materials Research,76,http://vivo.mcmaster.ca/individual/org76,RESEARCH,1076,http://vivo.mcmaster.ca/individual/org1076,2,0,1,0,0,0,0
+McMaster Institute for Research on Aging,77,http://vivo.mcmaster.ca/individual/org77,RESEARCH,1077,http://vivo.mcmaster.ca/individual/org1077,2,0,1,0,0,0,0
+MacDATA Institute,78,http://vivo.mcmaster.ca/individual/org78,RESEARCH,1078,http://vivo.mcmaster.ca/individual/org1078,2,0,1,0,0,0,0
+McMaster Institute for Healthier Environments,79,http://vivo.mcmaster.ca/individual/org79,RESEARCH,1079,http://vivo.mcmaster.ca/individual/org1079,2,0,1,0,0,0,0
