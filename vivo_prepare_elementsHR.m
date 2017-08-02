@@ -316,7 +316,7 @@ try
                 else
                     dw_colname = dw2hr{k,2};
                     tmp_print = tmp_output{1,find(strcmp(dw_colname,headers(:,1))==1)};
-                    if strcmp(dw2hr{k,1},'[Position]')==1 || strcmp(dw2hr{k,1},'[Department]')==1 || strncmp(dw2hr{k,1},'sec',3)==1
+                    if strcmp(dw2hr{k,1},'[Position]')==1 || strcmp(dw2hr{k,1},'[Department]')==1 || (strncmp(dw2hr{k,1},'[Generic',8)==1 && ~isempty(tmp_print))
                         tmp_print = ['"' tmp_print '"'];
                     end
                     fprintf(fid_out,formatspec,tmp_print);
@@ -392,7 +392,7 @@ try
                     tmp_print = '';
                 else
                     tmp_print = tmp_output{1,find(strcmp(dw_colname,headers_nf(:,1))==1)};
-                    if strcmp(dw2hr{k,1},'[Position]')==1 || strcmp(dw2hr{k,1},'[Department]')==1 || strncmp(dw2hr{k,1},'sec',3)==1
+                    if strcmp(dw2hr{k,1},'[Position]')==1 || strcmp(dw2hr{k,1},'[Department]')==1 || (strncmp(dw2hr{k,1},'[Generic',8)==1 && ~isempty(tmp_print))
                         tmp_print = ['"' tmp_print '"'];
                     end
                 end
