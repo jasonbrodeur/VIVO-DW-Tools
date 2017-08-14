@@ -1,15 +1,16 @@
 name_listed	name_vivo	type_uri	class_uri
-FACBUS	DeGroote School of Business	Faculty 	http://vivoweb.org/ontology/core#College 
-FHSACD	Faculty of Health Sciences	Faculty 	http://vivoweb.org/ontology/core#College 
-FACENG	Faculty of Engineering	Faculty 	http://vivoweb.org/ontology/core#College 
-FACSOCSCI	Faculty of Social Sciences	Faculty 	http://vivoweb.org/ontology/core#College 
-FACSCI	Faculty of Science	Faculty 	http://vivoweb.org/ontology/core#College 
+FACBUS	DeGroote School of Business	Faculty 	http://vivoweb.org/ontology/core#College
+FHSACD	Faculty of Health Sciences	Faculty 	http://vivoweb.org/ontology/core#College
+FACENG	Faculty of Engineering	Faculty 	http://vivoweb.org/ontology/core#College
+FACSOCSCI	Faculty of Social Sciences	Faculty 	http://vivoweb.org/ontology/core#College
+FACSCI	Faculty of Science	Faculty 	http://vivoweb.org/ontology/core#College
 MIIETL	"Paul R. MacPherson Institute for Leadership, Innovation and Excellence in Teaching"	Institute	
-FACHUM	Faculty of Humanities	Faculty 	http://vivoweb.org/ontology/core#College 
-FHSINT	Faculty of Health Sciences	Faculty 	http://vivoweb.org/ontology/core#College 
-FHSADM	Faculty of Health Sciences	Faculty 	http://vivoweb.org/ontology/core#College 
-VPFHS	Faculty of Health Sciences	Faculty 	http://vivoweb.org/ontology/core#College 
+FACHUM	Faculty of Humanities	Faculty 	http://vivoweb.org/ontology/core#College
+FHSINT	Faculty of Health Sciences	Faculty 	http://vivoweb.org/ontology/core#College
+FHSADM	Faculty of Health Sciences	Faculty 	http://vivoweb.org/ontology/core#College
+VPFHS	Faculty of Health Sciences	Faculty 	http://vivoweb.org/ontology/core#College
 RESEARCH	RESEARCH		
 AVP FACULTY			
 RESADMIN	RESADMIN		
 GRADSTD	GRADSTD		
+FHSESV	Faculty of Health Sciences	Faculty 	http://vivoweb.org/ontology/core#College

@@ -1,8 +1,8 @@
 function [] = vivo_HR_diff(v1, v2)
 % vivo_HR_diff.m - Performs a differential comparison between two versions of MCM_HR_import_current files.
 % usage: vivo_HR_diff(v1, v2), where v1 and v2 are version numbers (e.g. 66128, 73302). 
-v1 = 66128;
-v2 = 73302;
+% v1 = 66128;
+% v2 = 73302;
 %% 
 if ispc==1
     if exist('D:/Seafile/VIVO_Secure_Data/','dir')==7

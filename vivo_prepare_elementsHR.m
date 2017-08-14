@@ -426,12 +426,12 @@ copyfile([output_path '/McM_HR_import_current.tsv'],[output_path '/McM_HR_import
 disp(['Copies of output files created in ' output_path]);
 
 %% Prompt the user to send the HR file over to /Data_Import, if they'd like:
-s = input('Would you like to copy the HR import file to \Data_Import\01_To_Be_Processed (y/n)? > ','s');
+s = input('Would you like to copy the HR import file to /Data_Import/01_To_Be_Processed (y/n)? > ','s');
 if strcmpi(s,'y')==1
     [status,~,~] = copyfile([output_path '/McM_HR_import_current.csv'],[data_import_path '/McM_HR_import_current.csv']);
     if status==1
-        disp('File copied to \Data_Import\01_To_Be_Processed');
+        disp('File copied to /Data_Import/01_To_Be_Processed');
     else
-        disp('Something went wrong trying to copy to \Data_Import\01_To_Be_Processed');
+        disp('Something went wrong trying to copy to /Data_Import/01_To_Be_Processed');
     end
 end
