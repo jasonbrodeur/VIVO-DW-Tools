@@ -38,7 +38,7 @@ if str2num(v1) > str2num(v2)
 end
 
 %% Load v1:
-fid1 = fopen([load_path '/McM_HR_import_current-' v1 '.tsv'],'r');
+fid1 = fopen([load_path '/McM_HR_import-' v1 '.tsv'],'r');
 tline = fgetl(fid1);
 frewind(fid1);
 numcols2 = length(regexp(tline,'\t'))+1;
@@ -55,7 +55,7 @@ end
 clear C;
 
 %% Load v2:
-fid2 = fopen([load_path '/McM_HR_import_current-' v2 '.tsv'],'r');
+fid2 = fopen([load_path '/McM_HR_import-' v2 '.tsv'],'r');
 tline = fgetl(fid2);
 frewind(fid2);
 numcols2 = length(regexp(tline,'\t'))+1;

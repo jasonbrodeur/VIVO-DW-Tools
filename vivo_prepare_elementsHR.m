@@ -421,14 +421,15 @@ fclose(fid_out2);
 fclose(fid_issues);
 fclose(fid_history);
 %% Make a copy of the export file, so that there's a record:
-copyfile([output_path '/McM_HR_import_current.csv'],[output_path '/McM_HR_import_current-' file_ver '.csv']);
-copyfile([output_path '/McM_HR_import_current.tsv'],[output_path '/McM_HR_import_current-' file_ver '.tsv']);
+copyfile([output_path '/McM_HR_import_current.csv'],[output_path '/McM_HR_import-' file_ver '.csv']);
+copyfile([output_path '/McM_HR_import_current.tsv'],[output_path '/McM_HR_import-' file_ver '.tsv']);
 disp(['Copies of output files created in ' output_path]);
 
 %% Prompt the user to send the HR file over to /Data_Import, if they'd like:
 s = input('Would you like to copy the HR import file to /Data_Import/01_To_Be_Processed (y/n)? > ','s');
 if strcmpi(s,'y')==1
     [status,~,~] = copyfile([output_path '/McM_HR_import_current.csv'],[data_import_path '/McM_HR_import_current.csv']);
+    [status2,~,~] = copyfile([output_path '/McM_HR_import_creation_tracker.tsv'],[data_import_path 'McM_HR_import_creation_tracker.tsv']);
     if status==1
         disp('File copied to /Data_Import/01_To_Be_Processed');
     else
