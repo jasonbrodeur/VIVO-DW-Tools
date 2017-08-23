@@ -9,6 +9,9 @@ function [] = vivo_clean_dw(fname_in)
 % example: vivo_clean_dw('MCM_VIVO_ALL_FACULTY-46514.csv') or vivo_clean_dw('46514') or vivo_clean_dw(46514);
 % The script also loads in tab-separated lookup table files for faculty
 % positions, departments, faculties and buildings.
+% process_flag: options that control additional processes (if not included is set to 0)
+%%% = 1: copy the latest faculty list from VIVO_PROD_path
+%
 %%% Outputs:
 % The outputs include a 'cleaned' (ready-for-VIVO-integration) version of
 % the DW data, as well as a data processing report, which indicates
