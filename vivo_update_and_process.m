@@ -1,4 +1,7 @@
-function [] = vivo_update_and_process()
+function [] = vivo_update_and_process(automated_flag)
+if nargin<1
+    automated_flag = 0; %sets the automated flag to 0 
+end
 
 %% Set the starting path:
 if ispc==1
@@ -64,5 +67,7 @@ else
 end
 
 %% Run vivo_clean_dw
+disp('Running vivo_clean_dw')
 vivo_clean_dw(faculty_file_ver);
-vivo_prepare_elementsHR(faculty_file_ver);
+disp('Running vivo_prepare_elementsHR')
+vivo_prepare_elementsHR(faculty_file_ver,automated_flag);

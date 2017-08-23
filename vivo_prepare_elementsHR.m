@@ -1,4 +1,4 @@
-function [] = vivo_prepare_elementsHR(fname_in)
+function [] = vivo_prepare_elementsHR(fname_in, automated_flag)
 %%% vivo_prepare_elementsHR.m
 % This function loads cleaned DW extracted data (produced using vivo_clean_dw.m), and prepares the ready-for-Elements import file.
 
@@ -26,6 +26,9 @@ function [] = vivo_prepare_elementsHR(fname_in)
 % The file version number (e.g. ‘66128’) represented by the data in the output file
 % Whether the process was successful (=’1’) or unsuccessful (=’-1’)
 
+if nargin<2
+    automated_flag = 0; %sets the automated flag to 0 
+end
 
 %% The function:
 % Set path depending on whether PC or linux:
@@ -426,7 +429,12 @@ copyfile([output_path '/McM_HR_import_current.tsv'],[output_path '/McM_HR_import
 disp(['Copies of output files created in ' output_path]);
 
 %% Prompt the user to send the HR file over to /Data_Import, if they'd like:
+if automated_flag==0
 s = input('Would you like to copy the HR import file to /Data_Import/01_To_Be_Processed (y/n)? > ','s');
+else
+    s = 'y';
+end
+
 if strcmpi(s,'y')==1
     [status,~,~] = copyfile([output_path '/McM_HR_import_current.csv'],[data_import_path '/McM_HR_import_current.csv']);
     [status2,~,~] = copyfile([output_path '/McM_HR_import_creation_tracker.tsv'],[data_import_path 'McM_HR_import_creation_tracker.tsv']);
