@@ -5,6 +5,8 @@ This repository contains fucntions and lookup tables used to clean data (HR and 
 ## Contents:
 vivo_clean_dw.m --> DW HR data cleaning function  
 vivo_prepare_elementsHR.m --> function to format cleaned DW HR data for ingestion into Symplectic Elements.  
+vivo_diff.m --> function that allows a comparison of two DW HR file versions; creates separate lists of additions and deletions
+vivo_update_and_process --> function to move files out of DW share into MacDrive locations, and then run vivo_clean_dw and vivo_prepare_elementsHR functions.
 /lookup_tables --> various lookup tables used in processing operations  
 *all other files can be considered working/scratch files*
 
