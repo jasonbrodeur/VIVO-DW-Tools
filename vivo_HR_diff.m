@@ -1,4 +1,4 @@
-function [] = vivo_HR_diff(v1, v2)
+function [add_remove_flag] = vivo_HR_diff(v1, v2)
 % vivo_HR_diff.m - Performs a differential comparison between two versions of MCM_HR_import_current files.
 % usage: vivo_HR_diff(v1, v2), where v1 and v2 are version numbers (e.g. 66128, 73302). 
 % v1 = 66128;
@@ -84,6 +84,31 @@ empl_id_v2 = dw_v2(:,id_col);
 diff_v1 = dw_v1(iv1,:);
 diff_v2 = dw_v2(iv2,:);
 
+%% Investigate if there are individuals who have been added and removed from the files
+add_remove_flag = 0;
+for j = 1:1:size(diff_v2,1)
+    match_fname = find(strcmp(diff_v2{j,3},diff_v1(:,3))==1);
+    match_lname = find(strcmp(diff_v2{j,4},diff_v1(:,4))==1);
+%     match_fac = find(strcmp(diff_v2{j,11},diff_v1(:,11))==1);
+    
+    if match_fname==match_lname && ~isempty(match_fname)==1 && strcmp(diff_v2{j,11},diff_v1(match_fname,11))==1 
+        if strcmp(diff_v2{j,7},diff_v1(match_fname,7))==0 || strcmp(diff_v2{j,7},diff_v1(match_fname,7))==0
+                    add_remove_flag = 1;
+
+                disp(['Individual ' diff_v2{j,3} ' ' diff_v2{j,4} ' was deleted and re-added with different macIDs and/or email addresses.']);
+        end
+    end
+end
+
+if add_remove_flag == 1;
+   disp([]) 
+    
+end
+
+if size(diff_v1,1)>200 || size(diff_v2,1)>200
+    add_remove_flag = add_remove_flag + 2;
+    disp('additions and/or removals greater than 200 individuals. Investigate');
+end
 %% Export comparison results 
 
 %%% Additions
