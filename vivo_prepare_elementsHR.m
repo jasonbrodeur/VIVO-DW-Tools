@@ -437,10 +437,16 @@ end
 
 if strcmpi(s,'y')==1
     [status,~,~] = copyfile([output_path '/McM_HR_import_current.csv'],[data_import_path '/McM_HR_import_current.csv']);
-    [status2,~,~] = copyfile([output_path '/McM_HR_import_creation_tracker.tsv'],[data_import_path 'McM_HR_import_creation_tracker.tsv']);
     if status==1
-        disp('File copied to /Data_Import/01_To_Be_Processed');
+        disp('HR File copied to /Data_Import/01_To_Be_Processed');
     else
-        disp('Something went wrong trying to copy to /Data_Import/01_To_Be_Processed');
+        disp('Something went wrong trying to copy HR file to /Data_Import/01_To_Be_Processed');
+    end
+    [status2,~,~] = copyfile([output_path '/McM_HR_import_creation_tracker.tsv'],[data_import_path '/McM_HR_import_creation_tracker.tsv']);
+
+    if status2==1
+        disp('McM_HR_import_creation_tracker copied to /Data_Import/01_To_Be_Processed');
+    else
+        disp('Something went wrong trying to copy McM_HR_import_creation_tracker to /Data_Import/01_To_Be_Processed');
     end
 end
