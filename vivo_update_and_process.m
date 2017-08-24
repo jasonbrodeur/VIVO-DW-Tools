@@ -76,6 +76,8 @@ disp('Running vivo_prepare_elementsHR')
 vivo_prepare_elementsHR(faculty_file_ver,automated_flag);
 
 %% Figure out which is the next to most recent version that has been created; run diff
+disp('Running vivo_HR_diff')
+
 d_out = dir(output_path);
 tmp_out = (struct2cell(d_out))';
 
@@ -97,10 +99,11 @@ faculty_file_ver_old = file_vers(2);
 faculty_file_ver = file_vers(1);
 add_remove_flag = vivo_HR_diff(faculty_file_ver,faculty_file_ver_old);
 %% Send an email to the project data team
-to = {'brodeujj@mcmaster.ca','mirceag@mcmaster.ca'};
+% to = {'brodeujj@mcmaster.ca','mirceag@mcmaster.ca'};
+to = 'brodeujj@mcmaster.ca';
 subject = 'DW HR data processing for Elements - report';
-body = {['The HR data processing has run. A new file with version ' num2str(faculty_file_ver) ' has been created. ' sprintf('\n')...
-    'Please investigate the data report in /02_DW_cleaned/ and the diff files in /03_Prepared_For_Elements/' sprintf('\n')]};
+body = ['The HR data processing has run. A new file with version ' num2str(faculty_file_ver) ' has been created. ' sprintf('\n')...
+    'Please investigate the data report in /02_DW_cleaned/ and the diff files in /03_Prepared_For_Elements/' sprintf('\n')];
 
 if automated_flag ==1
    switch add_remove_flag
