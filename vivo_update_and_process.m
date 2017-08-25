@@ -100,19 +100,21 @@ faculty_file_ver = file_vers(1);
 add_remove_flag = vivo_HR_diff(faculty_file_ver,faculty_file_ver_old);
 %% Send an email to the project data team
 % to = {'brodeujj@mcmaster.ca','mirceag@mcmaster.ca'};
-to = 'brodeujj@mcmaster.ca';
+recipients = {'brodeujj@mcmaster.ca';'mirceag@mcmaster.ca'};
 subject = 'DW HR data processing for Elements - report';
 body = ['The HR data processing has run. A new file with version ' num2str(faculty_file_ver) ' has been created. ' sprintf('\n')...
-    'Please investigate the data report in /02_DW_cleaned/ and the diff files in /03_Prepared_For_Elements/' sprintf('\n')];
+    'Please investigate the data report in /02_DW_cleaned/ and the diff files in /03_Prepared_For_Elements/.' sprintf('\n')];
 
 if automated_flag ==1
    switch add_remove_flag
        case 1
-    body = [body 'An individual was removed and re-added to the HR file with different MacIDs or employee numbers. Investigate.' sprintf('\n')];
+    body = [body 'WARNING: An individual was removed and re-added to the HR file with different MacIDs or employee numbers. Investigate.' sprintf('\n')];
        case 2
-       body = [body 'More than 200 individuals were added and/or removed. Investigate.' sprintf('\n')];
+       body = [body 'WARNING: More than 200 individuals were added and/or removed. Investigate.' sprintf('\n')];
        case 3
-       body = [body 'An individual was removed and re-added to the HR file with different MacIDs or employee numbers AND more than 200 individuals were added and/or removed.' sprintf('\n')];
+       body = [body 'WARNING: An individual was removed and re-added to the HR file with different MacIDs or employee numbers AND more than 200 individuals were added and/or removed. Investigate.' sprintf('\n')];
    end
-   sendolmail(to,subject,body)
+   for i = 1:1:size(recipients,1)
+   sendolmail(recipients{i,1},subject,body);
+   end
 end
