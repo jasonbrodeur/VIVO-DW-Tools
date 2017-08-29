@@ -90,13 +90,13 @@ for j = 1:1:size(diff_v2,1)
     match_fname = find(strcmp(diff_v2{j,3},diff_v1(:,3))==1);
     match_lname = find(strcmp(diff_v2{j,4},diff_v1(:,4))==1);
 %     match_fac = find(strcmp(diff_v2{j,11},diff_v1(:,11))==1);
-    
-    if match_fname==match_lname && ~isempty(match_fname)==1 && strcmp(diff_v2{j,11},diff_v1(match_fname,11))==1 
+    if ~isempty(match_fname)==1 && ~isempty(match_lname)==1
+    if match_fname==match_lname && strcmp(diff_v2{j,11},diff_v1(match_fname,11))==1 
         if strcmp(diff_v2{j,7},diff_v1(match_fname,7))==0 || strcmp(diff_v2{j,7},diff_v1(match_fname,7))==0
-                    add_remove_flag = 1;
-
-                disp(['Individual ' diff_v2{j,3} ' ' diff_v2{j,4} ' was deleted and re-added with different macIDs and/or email addresses.']);
+            add_remove_flag = 1;
+            disp(['Individual ' diff_v2{j,3} ' ' diff_v2{j,4} ' was deleted and re-added with different macIDs and/or email addresses.']);
         end
+    end
     end
 end
 
