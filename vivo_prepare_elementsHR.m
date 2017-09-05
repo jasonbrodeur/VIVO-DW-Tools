@@ -265,7 +265,7 @@ try
                         tmp(ind2(ind3==0),:) = [];
                         tmp_ranks(ind2(ind3==0),:) = [];
                         disp(['Multiple rows with McMaster email address for: ' tmp{1,id_col} ', ' tmp{1,fname_col} ' ' tmp{1,lname_col}]);
-                        ind4 = strcmp('LT3',tmp(ind2(ind3),emplclass_col)); % look for a match in the "Employee Class" column to anything but "LT3"
+                        ind4 = strncmp('LT',tmp(ind2(ind3),emplclass_col),2); % look for a match in the "Employee Class" column to anything but "LT3"
                         tmp_ind=ones(length(ind4),1); tmp_ind(ind4==1,1)=0; ind4 = tmp_ind; clear tmp_ind;
                         if sum(ind4)==1 %if there's one row with a match, we're all set.
                             tmp(ind2(ind3(ind4==0)),:) = [];

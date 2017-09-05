@@ -12,7 +12,7 @@ function S=capitalize(S,skipset)
 % Function courtesy of Brandon Kuczenski (https://www.mathworks.com/matlabcentral/profile/authors/592642-brandon-kuczenski)
 
 if nargin<2 
-    skipset={'a','an','and','or','in','the', 'of'}; 
+    skipset={'a','an','and','or','in','the','of'}; 
 end
 skipset=lower(skipset);
 
