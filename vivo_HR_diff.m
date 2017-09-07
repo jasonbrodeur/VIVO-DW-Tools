@@ -1,14 +1,16 @@
 function [add_remove_flag] = vivo_HR_diff(v1, v2)
 % vivo_HR_diff.m - Performs a differential comparison between two versions of MCM_HR_import_current files.
-% usage: vivo_HR_diff(v1, v2), where v1 and v2 are version numbers (e.g. 66128, 73302). 
+% usage: vivo_HR_diff(v1, v2), where v1 and v2 are version numbers (e.g. 66128, 73302).
 % v1 = 66128;
 % v2 = 73302;
-%% 
+%%
 if ispc==1
     if exist('D:/Seafile/VIVO_Secure_Data/','dir')==7
         top_path = 'D:/Seafile/VIVO_Secure_Data/';
+        HRadd_path = 'D:\Seafile\VIVO_Pilot_Project\Elements\Weekly_Faculty_Additions\';
     elseif exist('C:\MacDrive\Seafile\VIVO_Secure_Data\','dir')==7      % Gabriela, you can add in your path here
         top_path = 'C:\MacDrive\Seafile\VIVO_Secure_Data\';                    % Gabriela, you can add in your path here
+        HRadd_path = '';%'D:\Seafile\VIVO_Pilot_Project\Elements\Weekly_Faculty_Additions\';% Gabriela, you can add in your path here
     else
         disp('Starting path not assigned. See line ~20 Exiting'); return;
     end
@@ -31,10 +33,10 @@ end
 
 % arrange it so that v1 is always the older version (lower number).
 if str2num(v1) > str2num(v2)
-   tmp = v1;
-   v1 = v2;
-   v2 = tmp;
-   clear tmp;
+    tmp = v1;
+    v1 = v2;
+    v2 = tmp;
+    clear tmp;
 end
 
 %% Load v1:
@@ -53,7 +55,7 @@ for i = 1:1:numcols2
     dw_v1(:,i) = C{1,i}(2:end,1);
 end
 clear C;
-
+headers_additions = {'[Firstname]';'[Lastname]';'[KnownAs]';'[Email]';'[Username]';'[Position]';'[PrimaryGroupDescriptor]';'[Department]'};
 %% Load v2:
 fid2 = fopen([load_path '/McM_HR_import-' v2 '.tsv'],'r');
 tline = fgetl(fid2);
@@ -66,7 +68,7 @@ fclose(fid2);
 %%% Extract headers
 for i = 1:1:numcols2
     % headers{i,1} = C{1,i}(1,1){1,1};
-%     headers{i,1} = C{1,i}{1,1};%{1,1};
+    %     headers{i,1} = C{1,i}{1,1};%{1,1};
     dw_v2(:,i) = C{1,i}(2:end,1);
 end
 clear C;
@@ -89,19 +91,19 @@ add_remove_flag = 0;
 for j = 1:1:size(diff_v2,1)
     match_fname = find(strcmp(diff_v2{j,3},diff_v1(:,3))==1);
     match_lname = find(strcmp(diff_v2{j,4},diff_v1(:,4))==1);
-%     match_fac = find(strcmp(diff_v2{j,11},diff_v1(:,11))==1);
+    %     match_fac = find(strcmp(diff_v2{j,11},diff_v1(:,11))==1);
     if ~isempty(match_fname)==1 && ~isempty(match_lname)==1
-    if match_fname==match_lname && strcmp(diff_v2{j,11},diff_v1(match_fname,11))==1 
-        if strcmp(diff_v2{j,7},diff_v1(match_fname,7))==0 || strcmp(diff_v2{j,7},diff_v1(match_fname,7))==0
-            add_remove_flag = 1;
-            disp(['Individual ' diff_v2{j,3} ' ' diff_v2{j,4} ' was deleted and re-added with different macIDs and/or email addresses.']);
+        if match_fname==match_lname && strcmp(diff_v2{j,11},diff_v1(match_fname,11))==1
+            if strcmp(diff_v2{j,7},diff_v1(match_fname,7))==0 || strcmp(diff_v2{j,7},diff_v1(match_fname,7))==0
+                add_remove_flag = 1;
+                disp(['Individual ' diff_v2{j,3} ' ' diff_v2{j,4} ' was deleted and re-added with different macIDs and/or email addresses.']);
+            end
         end
-    end
     end
 end
 
 if add_remove_flag == 1;
-   disp([]) 
+    disp([])
     
 end
 
@@ -109,7 +111,7 @@ if size(diff_v1,1)>200 || size(diff_v2,1)>200
     add_remove_flag = add_remove_flag + 2;
     disp('additions and/or removals greater than 200 individuals. Investigate');
 end
-%% Export comparison results 
+%% Export comparison results
 
 %%% Additions
 fid_out1 =fopen([load_path '/McM_HR_diff-' v2 'vs' v1 '-additions.tsv'],'w');
@@ -132,3 +134,29 @@ for tt = 1:1:size(diff_v1,1)
     fprintf(fid_out2,'%s\n',sprintf('%s\t',diff_v1{tt,:}));
 end
 fclose(fid_out2);
+
+%% Create a list of new additions for easy addition to the Weekly Additions Sheet:
+fid_out3 =fopen([load_path '/HRadditions-' v2 '.tsv'],'w');
+tmp_out = sprintf('%s\t',headers_additions{1:end-1});
+tmp_out = [tmp_out headers_additions{end}];
+fprintf(fid_out3, '%s\n',tmp_out);
+diff_adds = {};
+for i = 1:1:size(headers_additions,1)
+    ind = find(strcmp(headers_additions{i,1},headers(:,1))==1);
+    if ~isempty(ind)
+        diff_adds(:,size(diff_adds,2)+1) = diff_v2(:,ind);
+    end
+end
+
+for tt = 1:1:size(diff_adds,1)
+    fprintf(fid_out3,'%s\n',sprintf('%s\t',diff_adds{tt,:}));
+end
+fclose(fid_out3);
+[status] = copyfile([load_path '/HRadditions-' v2 '.tsv'],[HRadd_path 'HRadditions-' v2 '.tsv']);
+switch status
+    case 1
+        disp(['HRadditions-' v2 '.tsv copied to ' HRadd_path]);
+    case 0
+        disp(['Error copying HRadditions-' v2 '.tsv to ' HRadd_path]);
+end
+

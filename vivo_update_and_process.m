@@ -112,7 +112,7 @@ recipients = secrets.email_recipients;
 subject = 'DW HR data processing for Elements - report';
 body = ['The HR data processing has run. A new file with version ' num2str(faculty_file_ver) ' has been created. ' sprintf('\n')...
     'Please investigate the data report in /02_DW_cleaned/ and the diff files in /03_Prepared_For_Elements/.' sprintf('\n') ...
-    'New faculty additions can be found in /VIVO_Secure_Data/03_Prepared_For_Elements/McM_HR_diff-' faculty_file_ver 'vs' faculty_file_ver_old '-additions.tsv' sprintf('\n')];
+    'New faculty additions can be found in /VIVO_Secure_Data/03_Prepared_For_Elements/HRadditions-' faculty_file_ver '.tsv' sprintf('\n')];
 
 if automated_flag ==1
    switch add_remove_flag
