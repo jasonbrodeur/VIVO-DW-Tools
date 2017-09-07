@@ -99,11 +99,20 @@ faculty_file_ver_old = file_vers(2);
 faculty_file_ver = file_vers(1);
 add_remove_flag = vivo_HR_diff(faculty_file_ver,faculty_file_ver_old);
 %% Send an email to the project data team
-% to = {'brodeujj@mcmaster.ca','mirceag@mcmaster.ca'};
-recipients = {'brodeujj@mcmaster.ca';'mirceag@mcmaster.ca'};
+%%% Load the secrets from the secrets.mat file (NOTE THAT THIS file is only synced via MacDrive (not through Github):
+try
+load([top_path 'VIVO-DW-Tools/secrets.mat']); 
+catch
+automated_flag=0;
+disp('Could not load secrets file. Emails not being sent')
+end
+ 
+ % to = {'brodeujj@mcmaster.ca','mirceag@mcmaster.ca'};
+recipients = secrets.email_recipients;
 subject = 'DW HR data processing for Elements - report';
 body = ['The HR data processing has run. A new file with version ' num2str(faculty_file_ver) ' has been created. ' sprintf('\n')...
-    'Please investigate the data report in /02_DW_cleaned/ and the diff files in /03_Prepared_For_Elements/.' sprintf('\n')];
+    'Please investigate the data report in /02_DW_cleaned/ and the diff files in /03_Prepared_For_Elements/.' sprintf('\n') ...
+    'New faculty additions can be found in /VIVO_Secure_Data/03_Prepared_For_Elements/McM_HR_diff-' faculty_file_ver 'vs' faculty_file_ver_old '-additions.tsv' sprintf('\n')];
 
 if automated_flag ==1
    switch add_remove_flag
@@ -113,6 +122,8 @@ if automated_flag ==1
        body = [body 'WARNING: More than 200 individuals were added and/or removed. Investigate.' sprintf('\n')];
        case 3
        body = [body 'WARNING: An individual was removed and re-added to the HR file with different MacIDs or employee numbers AND more than 200 individuals were added and/or removed. Investigate.' sprintf('\n')];
+       otherwise
+       body = [body 'No immediate data issues detected.' sprintf('\n')];     
    end
    for i = 1:1:size(recipients,1)
    sendolmail(recipients{i,1},subject,body);
