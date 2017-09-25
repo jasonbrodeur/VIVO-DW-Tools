@@ -1,6 +1,10 @@
 function [] = vivo_update_and_process(automated_flag)
+
+%%% Inputs: 
+% automated_flag: A value of 1 indicates that the process should run in standalone mode and a follow-up email should be sent out
+%%% If automated_flag==0, then 
 if nargin<1
-    automated_flag = 0; %sets the automated flag to 0 
+    automated_flag = 0; %sets the automated flag to 0
 end
 
 %% Set the starting path:
@@ -112,7 +116,7 @@ recipients = secrets.email_recipients;
 subject = 'DW HR data processing for Elements - report';
 body = ['The HR data processing has run. A new file with version ' num2str(faculty_file_ver) ' has been created. ' sprintf('\n')...
     'Please investigate the data report in /02_DW_cleaned/ and the diff files in /03_Prepared_For_Elements/.' sprintf('\n') ...
-    'New faculty additions can be found in /VIVO_Secure_Data/03_Prepared_For_Elements/HRadditions-' faculty_file_ver '.tsv' sprintf('\n')];
+    'New faculty additions can be found in /VIVO_Secure_Data/03_Prepared_For_Elements/HRadditions-' num2str(faculty_file_ver) '.tsv' sprintf('\n')];
 
 if automated_flag ==1
    switch add_remove_flag
