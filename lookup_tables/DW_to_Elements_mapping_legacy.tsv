@@ -1,0 +1,69 @@
+Elements_fieldname	DW_fieldname
+[Title]	Prefix
+[Initials]	Initials
+[Firstname]	FirstName
+[Lastname]	LastName
+[KnownAs]	KnownAs
+[Suffix]	Suffix
+[Email]	Email addr
+[AuthenticatingAuthority]	AuthenticatingAuthority
+[Username]	MAC ID
+[Proprietary_ID]	ID
+[PrimaryGroupDescriptor]	Faculty
+[Generic01]	secpos1
+[Generic02]	secdept1
+[Generic03]	secpos2
+[Generic04]	secdept2
+[Generic05]	secpos3
+[Generic06]	secdept3
+[Generic07]	secpos4
+[Generic08]	secdept4
+[Generic09]	secpos5
+[Generic10]	secdept5
+[Generic11]	Union Code
+[Generic12]	Campus Ph Nbr
+[Generic13]	Camp Building
+[Generic14]	
+[Generic15]	
+[Generic16]	
+[Generic17]	
+[Generic18]	
+[Generic19]	
+[Generic20]	
+[Generic21]	
+[Generic22]	
+[Generic23]	
+[Generic24]	
+[Generic25]	
+[Generic26]	
+[Generic27]	
+[Generic28]	
+[Generic29]	
+[Generic30]	
+[Generic31]	
+[Generic32]	
+[Generic33]	
+[Generic34]	
+[Generic35]	
+[Generic36]	
+[Generic37]	
+[Generic38]	
+[Generic39]	
+[Generic40]	
+[Generic41]	
+[Generic42]	
+[Generic43]	
+[Generic44]	
+[Generic45]	
+[Generic46]	
+[Generic47]	
+[Generic48]	
+[Generic49]	
+[Generic50]	
+[IsAcademic]	<TRUE>
+[IsCurrent]	<TRUE>
+[LoginAllowed]	<TRUE>
+[ArriveDate]	
+[LeaveDate]	
+[Position]	Position
+[Department]	Department
