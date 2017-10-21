@@ -62,3 +62,15 @@
 "Vice-Provost (Teach&Learn)"	"Vice-Provost (Teaching & Learning)"	2		2
 "Adjunct Lecturer"	"Adjunct Lecturer"	2.5		2.5
 "Faculty Member"	"Assistant Professor"	1.2		1
+"Assistant Professor (PT)"	"Assistant Professor (Part-Time)"	1.22		1
+"Associate Professor (PT)"	"Associate Professor (Part-Time)"	1.11		1
+"Distinguished Univ Professor"	"Distinguished University Professor"	2.3		2
+"Scholar in Residence"	"Scholar in Residence"	3		0
+"DEAN & V.P. (HEALTH SCIENCES)"	"Dean and Vice-President"	2		0
+"POST DOCTORATE FELLOW"	"Postdoctoral Fellow"	-999	"not included at this point"	0
+"PRESIDENT & VICE-CHANCELLOR"	"President and Vice-Chancellor"	2		0
+"PROVOST & VICE-PRESIDENT(ACAD)"	"Provost and Vice-President, Academic"	2		0
+"RESEARCH FELLOW"	"Research Fellow"	2		0
+"VICE-PRESIDENT ADMIN"	"Vice-President, Administration"	3		0
+"VICE-PRESIDENT RESEARCH"	"Vice-President, Research"	2		0
+"VICE-PRESIDENT UNIV ADV"	"Vice-President, University Advancement"	2		0

@@ -12,22 +12,29 @@ function [] = vivo_prepare_elementsHR(fname_in, automated_flag)
 % sample usage: vivo_prepare_elementsHR('MCM_VIVO_ALL_FACULTY-62847-clean.tsv') or vivo_prepare_elementsHR('62847') or vivo_prepare_elementsHR(62847);
 % Created February 2017 by JJB.
 
-%% Update log:
+%% Major Update log:
 %%% 2017-06-26
 % 1. You can now run a selected version of the DW data (e.g. 66128) by simply using this value as an input, so:
 % vivo_prepare_elementsHR('MCM_VIVO_ALL_FACULTY-62847-clean.tsv')
-% vivo_prepare_elementsHR('62847') or 
+% vivo_prepare_elementsHR('62847') or
 % vivo_prepare_elementsHR(62847);
 % are all equivalent
-% 
+%%% 2017-09-02
 % 2. I've created a tracker/log file, to keep track of which version had been last run--this way, there's no more confusion about which 'version' of the data is represented in McM_HR_import_current.csv. This is all updated in the documentation (text pasted below):
-% Write a record to McM_HR_import_creation_tracker.tsv, with three columns indicating the: 
-% Date and time for which the McM_HR_import_current.csv file was created 
+% Write a record to McM_HR_import_creation_tracker.tsv, with three columns indicating the:
+% Date and time for which the McM_HR_import_current.csv file was created
 % The file version number (e.g. ‘66128’) represented by the data in the output file
 % Whether the process was successful (=’1’) or unsuccessful (=’-1’)
+%%% 2017-10-01
+% 3.Added the following information to Generic Fields:
+% Generic 12 = Phone Number
+% Generic 13 = Campus Address
+%%% 2017-10-20
+% 4. Revised the phone number process to use F&S directory first, then DW
+
 
 if nargin<2
-    automated_flag = 0; %sets the automated flag to 0 
+    automated_flag = 0; %sets the automated flag to 0
 end
 
 %% The function:
@@ -48,7 +55,7 @@ lut_path = [top_path 'VIVO-DW-Tools/lookup_tables']; % lookup table path
 load_path = [top_path '02_DW_Cleaned']; % cleaned data path
 output_path = [top_path '03_Processed_For_Elements']; % output path
 nonfac_path = [top_path '02_NonFacultyUsers']; % location of non-faculty-users list
-
+FSdir_path = [top_path '02_UTS_Cleaned'];
 %%% declare the path to the 'Data_Import' folder (used at the end of the script).
 ind0 = strfind(top_path,'VIVO_Secure');
 data_import_path = [top_path(1:ind0-1) 'Data_Import/01_To_Be_Processed'];
@@ -57,7 +64,7 @@ data_import_path = [top_path(1:ind0-1) 'Data_Import/01_To_Be_Processed'];
 if ischar(fname_in)~=1
     fname_in = num2str(fname_in);
 end
-    
+
 %%% Split apart the filename:
 [pathstr,fname,ext] = fileparts(fname_in);
 if strcmpi(fname(1:3),'MCM')~=1; % if only the number is given (e.g. '62198'), then build the entire string.
@@ -90,7 +97,11 @@ pos_lut(isString) = strrep(pos_lut(isString), '"', '');
 clear D num_cols hdr_pos;
 
 %%% Load the DW to Elements HR mapping:
-fid_dw2hr = fopen([lut_path '/DW_to_Elements_mapping.tsv'],'r');
+if str2double(file_ver)<80000
+fid_dw2hr = fopen([lut_path '/DW_to_Elements_mapping_legacy.tsv'],'r');
+else
+fid_dw2hr = fopen([lut_path '/DW_to_Elements_mapping.tsv'],'r');  
+end
 hdr_pos = fgetl(fid_dw2hr);
 %elements fieldname is col1 ; DW fieldname is col2
 num_cols = length(regexp(hdr_pos,'\t'))+1;
@@ -123,12 +134,12 @@ for i = 1:1:numcols2
 end
 
 %%% column numbers in dw
+
 posid_col = find(strcmp('Position ID',headers(:,1))==1);
 emailtype_col = find(strcmp('Email Type',headers(:,1))==1);
 id_col = find(strcmp('ID',headers(:,1))==1);
 macid_col = find(strcmp('MAC ID',headers(:,1))==1);
-fname_col = find(strcmp('FirstName',headers(:,1))==1);
-lname_col = find(strcmp('LastName',headers(:,1))==1);
+
 pos_col = find(strcmp('Position',headers(:,1))==1);
 prefix_col = find(strcmp(headers,'Prefix')==1);
 initials_col = find(strcmp(headers,'Initials')==1);
@@ -137,6 +148,19 @@ suffix_col = find(strcmp(headers,'Suffix')==1);
 dept_col = find(strcmp(headers,'Department')==1);
 emplclass_col = find(strcmp(headers,'Empl Class')==1);
 fac_col = find(strcmp(headers,'Faculty')==1);
+phone_col = find(strcmp(headers,'Campus Ph Nbr')==1);
+phone_ext_col = find(strcmp(headers,'Camp Phone Ext')==1);
+bldg_col = find(strcmp(headers,'Camp Building')==1);
+email_col = find(strcmp('Email addr',headers(:,1))==1);
+
+%%% Adjust field names based on version
+if str2double(file_ver)<80000
+    fname_col = find(strcmp('FirstName',headers(:,1))==1);
+    lname_col = find(strcmp('LastName',headers(:,1))==1);
+else
+    fname_col = find(strcmp('PRF First Name',headers(:,1))==1);
+    lname_col = find(strcmp('PRF Last Name',headers(:,1))==1);
+end
 
 secpos_col = [size(dw,2)+1:2:size(dw,2)+10]';
 secdept_col = [size(dw,2)+2:2:size(dw,2)+11]';
@@ -167,8 +191,8 @@ formatspec = repmat('%s',1,numcols2);
 C = textscan(fid_nf,formatspec,'Delimiter',',');
 % Remove quotation marks (causes issues):
 for pp = 1:1:size(C,2)
-        isString = cellfun('isclass', C{1,pp}, 'char');
-        C{1,pp}(isString) = strrep(C{1,pp}(isString), '"', '');
+    isString = cellfun('isclass', C{1,pp}, 'char');
+    C{1,pp}(isString) = strrep(C{1,pp}(isString), '"', '');
 end
 
 fclose(fid_nf);
@@ -209,6 +233,68 @@ fprintf(fid_issues, '%s\n',tmp_out);
 %%% And create a file to track what file was run when:
 fid_history = fopen([output_path '/McM_HR_import_creation_tracker.tsv'],'a');
 
+%% Load the UTS Faculty and Staff Directory sheet:
+fid = fopen([FSdir_path '/FSDir-current.tsv'],'r');
+tline = fgetl(fid);
+frewind(fid);
+numcols2 = length(regexp(tline,'\t'))+1;
+formatspec = repmat('%s',1,numcols2);
+E = textscan(fid,formatspec,'Delimiter','\t');
+fclose(fid);
+
+%%% Extract headers
+for i = 1:1:numcols2
+    % headers{i,1} = C{1,i}(1,1){1,1};
+    FSD_headers{i,1} = E{1,i}{1,1};%{1,1};
+    FSD(:,i) = E{1,i}(2:end,1);
+end
+FSD_email_col = find(strcmp('EMail',FSD_headers(:,1))==1); if isempty(FSD_email_col); disp('Could not find ''EMail'' column in FSD header');end
+FSD_phone_col = find(strcmp('Extension',FSD_headers(:,1))==1); if isempty(FSD_phone_col); disp('Could not find ''Extension'' column in FSD header');end
+%% Fill in the phone details by reformatting the phone number column; Fill in missing entries from F&S directory where there's a match:
+
+%%% Reformat the phone_col contexts to be formatted in xxx-xxx-xxxx ext. xxxx
+for i = 1:1:size(dw,1)
+    %     tmp_phone = dw{i,phone_col};
+    %     tmp_ext = dw{i,phone_ext_col};
+    dw_phone = dw{i,phone_col};
+    dw_ext = dw{i,phone_ext_col};
+    %%% Look for a match with the F&S Directory -- use this first
+    ind_email_match = find(strcmpi(dw{i,email_col},FSD(:,FSD_email_col))==1);
+    if ~isempty(ind_email_match)==1 && length(FSD{ind_email_match(1),FSD_phone_col})==5
+        if length(ind_email_match)>1
+            dw{i,phone_col} = ['905-525-9140 ext. ' FSD{ind_email_match(1),FSD_phone_col}];
+            disp(['Found > 1 email match for ' dw{i,email_col} '. extensions = ' FSD{ind_email_match,FSD_phone_col}]);
+        else
+            dw{i,phone_col} = ['905-525-9140 ext. ' FSD{ind_email_match,FSD_phone_col}];
+            disp(['Found email match for ' dw{i,email_col} '. extension = ' FSD{ind_email_match,FSD_phone_col}]);
+        end
+    else %otherwise, paste in from DW
+        if ~isempty(dw_phone)
+            dw{i,phone_col} = [ dw_phone(1:3) '-' dw_phone(4:6) '-' dw_phone(7:10) ' ext. ' dw_ext];
+        else
+            dw{i,phone_col} = '';
+            dw{i,phone_ext_col} = '';
+        end
+    end
+    %     if ~isempty(tmp_phone)==1 && length(tmp_phone)==10 && ~isempty(tmp_ext)==1
+    %         %%% If phone number looks good, format it and write it back to the dw matrix
+    %         dw{i,phone_col} = [ tmp_phone(1:3) '-' tmp_phone(4:6) '-' tmp_phone(7:10) ' ext. ' tmp_ext];
+    %     else
+    %         %%% If phone number does not exist, look for a match with the F&S Directory
+    %         ind_email_match = find(strcmpi(dw{i,email_col},FSD(:,FSD_email_col))==1);
+    %         if ~isempty(ind_email_match)==1 && length(FSD{ind_email_match(1),FSD_phone_col})==5
+    %             if length(ind_email_match)>1
+    %                 dw{i,phone_col} = ['905-525-9140 ext. ' FSD{ind_email_match(1),FSD_phone_col}];
+    %                 disp(['Found > 1 email match for ' dw{i,email_col} '. extensions = ' FSD{ind_email_match,FSD_phone_col}]);
+    %             else
+    %                 dw{i,phone_col} = ['905-525-9140 ext. ' FSD{ind_email_match,FSD_phone_col}];
+    %                 disp(['Found email match for ' dw{i,email_col} '. extension = ' FSD{ind_email_match,FSD_phone_col}]);
+    %             end
+    %         else
+    %             dw{i,phone_col} = '';
+    %         end
+    %     end
+end
 
 %% First cleanup -- remove any rows where position rank is -999
 dw_ranks = NaN.*ones(size(dw,1),1);
@@ -270,7 +356,7 @@ try
                         if sum(ind4)==1 %if there's one row with a match, we're all set.
                             tmp(ind2(ind3(ind4==0)),:) = [];
                             tmp_ranks(ind2(ind3(ind4==0)),:) = [];
-                        elseif sum(ind4)>1 
+                        elseif sum(ind4)>1
                             tmp(ind2(ind3(ind4==0)),:) = [];
                             tmp_ranks(ind2(ind3(ind4==0)),:) = [];
                             disp(['Multiple rows with McMaster email address and same position number for: ' tmp{1,id_col} ', ' tmp{1,fname_col} ' ' tmp{1,lname_col}]);
@@ -304,6 +390,9 @@ try
                 otherwise
                     tmp_output{1,auth_col} = 'NONFHS';
             end
+            
+            %%%
+            
             
             for k = 1:1:size(dw2hr,1)
                 if k < size(dw2hr,1); formatspec = '%s\t';formatspec2 = '%s,'; else formatspec = '%s\n'; formatspec2 = '%s\n';end
@@ -358,13 +447,13 @@ try
     for i = 1:1:size(dw_nf,1);
         tmp_output = dw_nf(i,:);
         %%% Insert Authenticating Authority information as either 'FHS' (for faculty of health sciences) or 'NONFHS' (for
-            %%% others), according to faculty of primary appointment.
-            switch tmp_output{1,fac_col}
-                case 'Faculty of Health Sciences'
-                    tmp_output{1,auth_col} = 'FHS';
-                otherwise
-                    tmp_output{1,auth_col} = 'NONFHS';
-            end
+        %%% others), according to faculty of primary appointment.
+        switch tmp_output{1,fac_col}
+            case 'Faculty of Health Sciences'
+                tmp_output{1,auth_col} = 'FHS';
+            otherwise
+                tmp_output{1,auth_col} = 'NONFHS';
+        end
         for k = 1:1:size(dw2hr,1)
             if k < size(dw2hr,1); formatspec = '%s\t';formatspec2 = '%s,'; else formatspec = '%s\n'; formatspec2 = '%s\n';end
             
@@ -414,9 +503,9 @@ end
 fprintf(fid_history,'%s\t',datestr(now,30));
 fprintf(fid_history,'%s\t',file_ver);
 if sum(success_flag)==2
-fprintf(fid_history,'%s\n','1');
+    fprintf(fid_history,'%s\n','1');
 else
-fprintf(fid_history,'%s\n','-1');
+    fprintf(fid_history,'%s\n','-1');
 end
 %% Close the files:
 fclose(fid_out);
@@ -430,7 +519,7 @@ disp(['Copies of output files created in ' output_path]);
 
 %% Prompt the user to send the HR file over to /Data_Import, if they'd like:
 if automated_flag==0
-s = input('Would you like to copy the HR import file to /Data_Import/01_To_Be_Processed (y/n)? > ','s');
+    s = input('Would you like to copy the HR import file to /Data_Import/01_To_Be_Processed (y/n)? > ','s');
 else
     s = 'y';
 end
@@ -443,7 +532,7 @@ if strcmpi(s,'y')==1
         disp('Something went wrong trying to copy HR file to /Data_Import/01_To_Be_Processed');
     end
     [status2,~,~] = copyfile([output_path '/McM_HR_import_creation_tracker.tsv'],[data_import_path '/McM_HR_import_creation_tracker.tsv']);
-
+    
     if status2==1
         disp('McM_HR_import_creation_tracker copied to /Data_Import/01_To_Be_Processed');
     else

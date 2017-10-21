@@ -1,8 +1,8 @@
 Elements_fieldname	DW_fieldname
 [Title]	Prefix
 [Initials]	Initials
-[Firstname]	FirstName
-[Lastname]	LastName
+[Firstname]	PRF First Name
+[Lastname]	PRF Last Name
 [KnownAs]	KnownAs
 [Suffix]	Suffix
 [Email]	Email addr
@@ -21,8 +21,8 @@ Elements_fieldname	DW_fieldname
 [Generic09]	secpos5
 [Generic10]	secdept5
 [Generic11]	Union Code
-[Generic12]	
-[Generic13]	
+[Generic12]	Campus Ph Nbr
+[Generic13]	Camp Building
 [Generic14]	
 [Generic15]	
 [Generic16]	

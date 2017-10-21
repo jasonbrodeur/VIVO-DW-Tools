@@ -9,8 +9,13 @@ FACHUM	Faculty of Humanities	Faculty 	http://vivoweb.org/ontology/core#College
 FHSINT	Faculty of Health Sciences	Faculty 	http://vivoweb.org/ontology/core#College
 FHSADM	Faculty of Health Sciences	Faculty 	http://vivoweb.org/ontology/core#College
 VPFHS	Faculty of Health Sciences	Faculty 	http://vivoweb.org/ontology/core#College
-RESEARCH	RESEARCH		
+RESEARCH			
 AVP FACULTY			
-RESADMIN	RESADMIN		
-GRADSTD	GRADSTD		
+RESADMIN			
+GRADSTD			
 FHSESV	Faculty of Health Sciences	Faculty 	http://vivoweb.org/ontology/core#College
+PRESIDENT			
+PROVOST			
+UNIVADMIN			
+UNIVADV			
+UNIVLIB	"McMaster University Libraries"	Faculty 	http://vivoweb.org/ontology/core#College
