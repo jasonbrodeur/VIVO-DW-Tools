@@ -260,12 +260,14 @@ for i = 1:1:size(dw,1)
     dw_ext = dw{i,phone_ext_col};
     %%% Look for a match with the F&S Directory -- use this first
     ind_email_match = find(strcmpi(dw{i,email_col},FSD(:,FSD_email_col))==1);
-    if ~isempty(ind_email_match)==1 && length(FSD{ind_email_match(1),FSD_phone_col})==5
+    if ~isempty(ind_email_match)==1 % && length(FSD{ind_email_match(1),FSD_phone_col})==5
         if length(ind_email_match)>1
-            dw{i,phone_col} = ['905-525-9140 ext. ' FSD{ind_email_match(1),FSD_phone_col}];
+            dw{i,phone_col} = FSD{ind_email_match(1),FSD_phone_col};
+%             dw{i,phone_col} = ['905-525-9140 ext. ' FSD{ind_email_match(1),FSD_phone_col}];
             disp(['Found > 1 email match for ' dw{i,email_col} '. extensions = ' FSD{ind_email_match,FSD_phone_col}]);
         else
-            dw{i,phone_col} = ['905-525-9140 ext. ' FSD{ind_email_match,FSD_phone_col}];
+            dw{i,phone_col} = FSD{ind_email_match,FSD_phone_col};
+%             dw{i,phone_col} = ['905-525-9140 ext. ' FSD{ind_email_match,FSD_phone_col}];
             disp(['Found email match for ' dw{i,email_col} '. extension = ' FSD{ind_email_match,FSD_phone_col}]);
         end
     else %otherwise, paste in from DW
