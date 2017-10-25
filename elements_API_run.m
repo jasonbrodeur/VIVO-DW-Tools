@@ -1,3 +1,18 @@
+function [] = elements_API_run(sys)
+% Pushes updated information to Elements using the API.
+% Input:
+% sys ('DEV' or 'PROD') -- indicates the system for upload.
+
+sys = upper(sys);
+switch sys
+    case {'PROD','DEV'}
+        disp(['Updating information to system: ' sys]);
+    otherwise
+        disp('Input argument of either ''DEV'' or ''PROD'' required. Exiting.');
+        return;
+end
+%%
+
 if ispc==1
     if exist('D:/Seafile/VIVO_Secure_Data/','dir')==7
         top_path = 'D:/Seafile/VIVO_Secure_Data/';
@@ -18,7 +33,7 @@ load_path = [top_path '03_Processed_For_Elements']; % output path
 output_path = [top_path 'Elements_API_upload_logs']; % location of 'raw' data file
 
 %%% Report:
-fid_report = fopen([output_path '/API-upload-report' datestr(now,30) '.txt'],'w');
+fid_report = fopen([output_path '/API-' upper(sys) '-upload-report' datestr(now,30) '.txt'],'w');
 
 %%
 % uname = 'brodeujj';
@@ -27,7 +42,7 @@ fid_report = fopen([output_path '/API-upload-report' datestr(now,30) '.txt'],'w'
 %Load secrets file:
 load([top_path 'VIVO-DW-Tools/secrets.mat']);
 KeyValue = secrets.API.KeyValue;
-sys = 'DEV';
+
 
 %%
 fid1 = fopen([load_path '/McM_HR_import_current.tsv'],'r');
