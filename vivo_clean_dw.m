@@ -117,6 +117,8 @@ if exit_flag == 0
     fname_col = find(strcmp(headers,'PRF First Name')==1);
     lname_col = find(strcmp(headers,'PRF Last Name')==1);
     mname_col = find(strcmp(headers,'PRI Middle Name')==1); %There appears to be no PRF Middle Name
+    pri_fname_col = find(strcmp(headers,'PRI First Name')==1);
+    pri_lname_col = find(strcmp(headers,'PRI Last Name')==1);
     initials_col = find(strcmp(headers,'Initials')==1);
     knownas_col = find(strcmp(headers,'KnownAs')==1);
     if isempty(knownas_col)
@@ -185,7 +187,12 @@ if exit_flag == 0
     %%% Cleanup for first names
     fprintf(fid_report,'%s\n','IDs requiring first name cleanup:');
     
- 
+    %%% For any individuals missing an entry in PRF First Name, try and
+    %%% copy in from PRI First Name:
+%     empty_fname = find(isempty(dw(:,fname_col))==1);
+    ind=find(cellfun('isempty',dw(:,fname_col)));
+    dw(ind,fname_col)=dw(ind,pri_fname_col);
+    
     % period to space:
     period = strfind(dw(:,fname_col),'.');
     ind=find(cellfun('isempty',period)==0);
@@ -389,6 +396,12 @@ if exit_flag == 0
     
     %%% Additional cleanup for last names
     fprintf(fid_report,'%s\n','IDs requiring last name cleanup');
+    
+        %%% For any individuals missing an entry in PRF Last Name, try and
+    %%% copy in from PRI Last Name:
+%     empty_fname = find(isempty(dw(:,lname_col))==1);
+        ind=find(cellfun('isempty',dw(:,lname_col)));
+        dw(ind,lname_col)=dw(ind,pri_lname_col);
     
     % extra space on either side of hyphen:
     extra_space = strfind(dw(:,lname_col),' - ');
