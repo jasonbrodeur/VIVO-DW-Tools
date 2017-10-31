@@ -1,0 +1,68 @@
+Department_Name,Organization_Within,Class,class_uri
+Accounting & Financial Management Services,DeGroote School of Business,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Anesthesia,Faculty of Health Sciences,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Anthropology,Faculty of Social Sciences,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Arts & Science,McMaster University,Program,http://vivoweb.org/ontology/core#Program
+BHSc Program,Faculty of Health Sciences,Program,http://vivoweb.org/ontology/core#Program
+Biochemistry & Biomedical Sciences,Faculty of Health Sciences,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Biology,Faculty of Science,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Biomedical Engineering,Faculty of Engineering,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Centre for Emerging Device Technologies,Faculty of Engineering,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Chemical Engineering,Faculty of Engineering,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Chemistry & Chemical Biology,Faculty of Science,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Civil Engineering,Faculty of Engineering,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Classics,Faculty of Humanities,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Communication Studies & Multimedia,Faculty of Humanities,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Computing and Software,Faculty of Engineering,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Economics,Faculty of Social Sciences,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Electrical and Computer Engineering,Faculty of Engineering,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Engineering Physics,Faculty of Engineering,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+English & Cultural Studies,Faculty of Humanities,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Family Medicine,Faculty of Health Sciences,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Finance & Business Economics,DeGroote School of Business,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+French,Faculty of Humanities,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Gender Studies and Feminist Research,Faculty of Humanities,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Geography & Earth Sciences,Faculty of Science,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Health Policy and Management,DeGroote School of Business,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+"Health Research Methods, Evidence, and Impact",Faculty of Health Sciences,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+"Health, Aging & Society",Faculty of Social Sciences,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+History,Faculty of Humanities,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Human Resources & Management,DeGroote School of Business,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Information Systems,DeGroote School of Business,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Interdisciplinary Science,Faculty of Science,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Kinesiology,Faculty of Science,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Labour Studies,Faculty of Social Sciences,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Linguistics and Languages,Faculty of Humanities,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Marketing,DeGroote School of Business,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Materials Science and Engineering,Faculty of Engineering,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Mathematics and Statistics,Faculty of Science,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Mechanical Engineering,Faculty of Engineering,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Medical Physics and Applied Radiation Sciences,Faculty of Science,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Medicine,Faculty of Health Sciences,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Nursing,Faculty of Health Sciences,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Obstetrics & Gynecology,Faculty of Health Sciences,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Oncology,Faculty of Health Sciences,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Operations Management,DeGroote School of Business,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Pathology & Molecular Medicine,Faculty of Health Sciences,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Peace Studies,Faculty of Humanities,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Pediatrics,Faculty of Health Sciences,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Philosophy,Faculty of Humanities,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Physics & Astronomy,Faculty of Science,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Political Science,Faculty of Social Sciences,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Psychiatry & Behavioural Neurosciences,Faculty of Health Sciences,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+"Psychology, Neuroscience & Behaviour",Faculty of Science,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Radiology,Faculty of Health Sciences,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Rehabilitation Science,Faculty of Health Sciences,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Religious Studies,Faculty of Social Sciences,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+School of the Arts,Faculty of Humanities,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Social Work,Faculty of Social Sciences,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Sociology,Faculty of Social Sciences,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Strategic Management,DeGroote School of Business,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+Surgery,Faculty of Health Sciences,Academic Department,http://vivoweb.org/ontology/core#AcademicDepartment
+DeGroote School of Business,McMaster University,College,http://vivoweb.org/ontology/core#College
+Faculty of Health Sciences,McMaster University,College,http://vivoweb.org/ontology/core#College
+Faculty of Engineering,McMaster University,College,http://vivoweb.org/ontology/core#College
+Faculty of Social Sciences,McMaster University,College,http://vivoweb.org/ontology/core#College
+Faculty of Science,McMaster University,College,http://vivoweb.org/ontology/core#College
+Faculty of Humanities,McMaster University,College,http://vivoweb.org/ontology/core#College
+Bachelor of Health Sciences Program,Faculty of Health Sciences,Program,http://vivoweb.org/ontology/core#Program
