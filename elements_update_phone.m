@@ -1,7 +1,22 @@
 function [response] = elements_update_phone(uname, phone_num,KeyValue,sys)
-% uname = 'brodeujj';
-% phone_num = '905-525-9140 x28043';
+% elements_update_phone.m 
+% This function performs GET and PATCH requests to the Elements API, to
+% update the work phone number in the system. 
+%
+% Inputs: 
+% - uname: username of the individual to be updated
+% - phone_num: phone number as a string (e.g. '905-525-9140 x28043')
+% - KeyValue: A base64-encoded authentication string, derived from your
+% Elements username and API password (configured in Elements). See
+% commented area below for more information. 
+%
+% Prerequisites: 
+% - Your account must have appropriate API access permitted in the Elements system 
+% - Your workstation IP must be whitelisted for the port 8091 on the
+% elements machines
+% - You must generate a KeyValue, to use for authentication purposes.
 
+%% Set paths
 top_path = 'D:\Seafile\VIVO_Secure_Data\VIVO-DW-Tools\';
 save_dir = [top_path 'Elements\'];
 

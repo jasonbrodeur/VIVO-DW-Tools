@@ -1,8 +1,19 @@
 function [] = elements_API_run(sys)
-% Pushes updated information to Elements using the API.
-% Input:
+% elements_API_run.m 
+% This function pushes updated information to Elements using the API.
+% Currently, this function only pushes phone number information, but could
+% be expanded to push across other information. 
+% Input arguments:
 % sys ('DEV' or 'PROD') -- indicates the system for upload.
+%
+%
+% Relevant Documentation:
+% https://support.symplectic.co.uk/support/solutions/articles/6000050010-api-user-guide
+% https://support.symplectic.co.uk/support/solutions/articles/6000170777-api-v5-5-resources-and-operations
+% https://support.symplectic.co.uk/support/solutions/articles/6000170776-api-v5-5-requests-and-responses
 
+
+%%% verify that proper input argument is provided
 sys = upper(sys);
 switch sys
     case {'PROD','DEV'}
@@ -11,8 +22,7 @@ switch sys
         disp('Input argument of either ''DEV'' or ''PROD'' required. Exiting.');
         return;
 end
-%%
-
+%% Set paths
 if ispc==1
     if exist('D:/Seafile/VIVO_Secure_Data/','dir')==7
         top_path = 'D:/Seafile/VIVO_Secure_Data/';
@@ -32,19 +42,15 @@ end
 load_path = [top_path '03_Processed_For_Elements']; % output path
 output_path = [top_path 'Elements_API_upload_logs']; % location of 'raw' data file
 
-%%% Report:
+%%% Open Report:
 fid_report = fopen([output_path '/API-' upper(sys) '-upload-report' datestr(now,30) '.txt'],'w');
 
-%%
-% uname = 'brodeujj';
-% phone_num = '905-525-9140 x28043';
-
-%Load secrets file:
+%% Load secrets file:
 load([top_path 'VIVO-DW-Tools/secrets.mat']);
 KeyValue = secrets.API.KeyValue;
 
 
-%%
+%% Load and format the current HR import data:
 fid1 = fopen([load_path '/McM_HR_import_current.tsv'],'r');
 tline = fgetl(fid1);
 frewind(fid1);
@@ -67,7 +73,7 @@ for i = 1:1:numcols2
 end
 clear C;
 
-%% Phone numbers!!!
+%% Ingest phone numbers using elements_update_phone.m
 % phone numbers are in [Generic12]
 phone_num_col = find(strcmp('[Generic12]',headers(:,1))==1);
 macid_col = find(strcmp('[Username]',headers(:,1))==1);
