@@ -2,7 +2,9 @@ function [] = vivo_update_and_process(automated_flag)
 
 %%% Inputs: 
 % automated_flag: A value of 1 indicates that the process should run in standalone mode and a follow-up email should be sent out
-%%% If automated_flag==0, then 
+%%% If automated_flag==0, then no follow-up email and auto transfer of
+%%% files takes place.
+
 if nargin<1
     automated_flag = 0; %sets the automated flag to 0
 end

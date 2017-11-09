@@ -446,7 +446,7 @@ dw_nf_tmp = dw_nf(ia,:);
 dw_nf = dw_nf_tmp; clear dw_nf_tmp;
 
 try
-    for i = 1:1:size(dw_nf,1);
+    for i = 1:1:size(dw_nf,1)
         tmp_output = dw_nf(i,:);
         %%% Insert Authenticating Authority information as either 'FHS' (for faculty of health sciences) or 'NONFHS' (for
         %%% others), according to faculty of primary appointment.
@@ -467,6 +467,7 @@ try
                     tmp_print = 'FALSE';
                 else
                     tmp_print = dw2hr{k,2}(2:end-1);
+%                     tmp_print = strrep(tmp_print,'"',''); % Remove quotation marks
                 end
                 fprintf(fid_out,formatspec,tmp_print);
                 fprintf(fid_out2,formatspec2,tmp_print);

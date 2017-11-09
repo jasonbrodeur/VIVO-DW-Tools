@@ -1,0 +1,28 @@
+Get all individuals and concepts for which research areas have been assigned:
+
+
+SELECT ?concepts ?people
+WHERE
+{
+      ?people vivo:hasResearchArea ?concepts
+}
+
+
+Returns:
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| concepts                                                                                                                                    | people                                           |
+==================================================================================================================================================================================================
+| <https://experts.mcmaster.ca/individual/vocab-c-research-areas-music-composition>                                                           | <https://experts.mcmaster.ca/individual/ranil>   |
+| <https://experts.mcmaster.ca/individual/vocab-for-170101-biological-psychology-neuropsychology-psychopharmacology-physiological-psychology> | <https://experts.mcmaster.ca/individual/obhi>    |
+| <https://experts.mcmaster.ca/individual/vocab-for-111203-cancer-genetics>                                                                   | <https://experts.mcmaster.ca/individual/ssingh>  |
+| <https://experts.mcmaster.ca/individual/vocab-for-1702-cognitive-sciences>                                                                  | <https://experts.mcmaster.ca/individual/obhi>    |
+| <https://experts.mcmaster.ca/individual/vocab-for-1109-neurosciences>                                                                       | <https://experts.mcmaster.ca/individual/ssingh>  |
+| <https://experts.mcmaster.ca/individual/vocab-for-1112-oncology-and-carcinogenesis>                                                         | <https://experts.mcmaster.ca/individual/ssingh>  |
+| <https://experts.mcmaster.ca/individual/vocab-c-research-areas-european-history-excl-british-classical-greek-and-roman>                     | <https://experts.mcmaster.ca/individual/askeyd>  |
+| <https://experts.mcmaster.ca/individual/vocab-for-0903-biomedical-engineering>                                                              | <https://experts.mcmaster.ca/individual/qfang>   |
+| <https://experts.mcmaster.ca/individual/vocab-for-091506-nuclear-engineering-incl-fuel-enrichment-and-waste-processing-and-storage>         | <https://experts.mcmaster.ca/individual/nagasas> |
+| <https://experts.mcmaster.ca/individual/vocab-for-170112-sensory-processes-perception-and-performance>                                      | <https://experts.mcmaster.ca/individual/obhi>    |
+| <https://experts.mcmaster.ca/individual/vocab-for-1503-business-and-management>                                                             | <https://experts.mcmaster.ca/individual/abad>    |
+| <https://experts.mcmaster.ca/individual/vocab-for-020504-photonics-optoelectronics-and-optical-communications>                              | <https://experts.mcmaster.ca/individual/qfang>   |
+| <https://experts.mcmaster.ca/individual/vocab-c-research-areas-library-and-information-studies>                                             | <https://experts.mcmaster.ca/individual/askeyd>  |
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
