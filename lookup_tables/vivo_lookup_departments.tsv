@@ -67,9 +67,9 @@ Medical Physics and Applied Ra	Medical Physics and Applied Radiation Sciences	Fa
 Medicine	Medicine	Faculty of Health Sciences	Academic Department	http://vivoweb.org/ontology/core#AcademicDepartment	1	
 Nursing	Nursing	Faculty of Health Sciences	Academic Department	http://vivoweb.org/ontology/core#AcademicDepartment	1	
 Obs & Gyn	Obstetrics & Gynecology	Faculty of Health Sciences	Academic Department	http://vivoweb.org/ontology/core#AcademicDepartment	1	
-AVP Academic	Office of the Associate Vice President, Academic		Office		0	
-International Affairs	Office of the Associate Vice President, International Affairs	RESADMIN	Office		0	
-Associate VP Research	Office of the Associate Vice President, Research	#N/A	Office		0	
+AVP Academic	Office of the Associate Vice-President, Academic		Office		0	
+International Affairs	Office of International Affairs	RESADMIN	Office		0	
+Associate VP Research	Office of the Vice-President, Research	#N/A	Office		0	
 Oncology	Oncology	Faculty of Health Sciences	Academic Department	http://vivoweb.org/ontology/core#AcademicDepartment	1	
 Chepa/Mohltc Chair In Health E	Ontario Ministry of Health and Long-Term Care Chair in Health Equity	Faculty of Health Sciences	Chair		0	
 Operations Management	Operations Management	DeGroote School of Business	Academic Department	http://vivoweb.org/ontology/core#AcademicDepartment	1	
@@ -110,4 +110,4 @@ Research High Performance Comp	Research & High-Performance Computing Support			0
 Stem Cell Research Institute	McMaster Stem Cell and Cancer Research Institute			0	
 UA Central Administration	University Advancement			0	
 UnivLibrary Central Administn	University Library			0	
-VP Research Central Admin	Office of the Associate Vice President, Research	#N/A	Office		0	
+VP Research Central Admin	Office of the Vice-President, Research	#N/A	Office		0	

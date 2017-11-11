@@ -21,9 +21,9 @@
 "Associate Professor"	"Associate Professor"	1.1		1
 "Associate Professor (Part-Time"	"Associate Professor (Part-Time)"	1.11		1
 "ASSOCIATE VICE-PRESIDENT"	"Associate Vice-President"	2		2
-"CANADA RESEARCH CHAIR"	"Canada Research Chair"	2.2		2
-"CANADA RESEARCH CHAIR TIER I"	"Canada Research Chair Tier I"	2.2		2
-"CANADA RESEARCH CHAIR TIER II"	"Canada Research Chair Tier II"	2.2		2
+"CANADA RESEARCH CHAIR"	"Canada Research Chair"	-999		2.2
+"CANADA RESEARCH CHAIR TIER I"	"Canada Research Chair Tier I"	-999		2.2
+"CANADA RESEARCH CHAIR TIER II"	"Canada Research Chair Tier II"	-999		2.2
 "CHAIR"	"Chair"	2.1		2
 "CHAIR IN MASONRY DESIGN"	"Chair in Masonry Design"	2.1		2
 "Clinical Lecturer"	"Clinical Lecturer"	1.4		1
