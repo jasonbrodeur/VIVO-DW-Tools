@@ -11,16 +11,16 @@
 "ASSISTANT PROFESSOR"	"Assistant Professor"	1.2		1
 "Assistant Professor"	"Assistant Professor"	1.2		1
 "Assistant Professor (Part-Time"	"Assistant Professor (Part-Time)"	1.22		1
-"ASSOC VP RESEARCH&INTL AFFAIRS"	"Associate Vice-President"	2		2
+"ASSOC VP RESEARCH&INTL AFFAIRS"	"Associate Vice-President"	1		2
 "ASSOCIATE CHAIR"	"Associate Chair"	2.1		2
 "Associate Clinical Professor"	"Associate Clinical Professor"	1.1		1
-"ASSOCIATE DEAN"	"Associate Dean"	2		2
+"ASSOCIATE DEAN"	"Associate Dean"	1		2
 "ASSOCIATE DIRECTOR"	"Associate Director"	2.1		2
 "Associate Member"	"Associate Member"	3		3
 "ASSOCIATE PROFESSOR"	"Associate Professor"	1.1		1
 "Associate Professor"	"Associate Professor"	1.1		1
 "Associate Professor (Part-Time"	"Associate Professor (Part-Time)"	1.11		1
-"ASSOCIATE VICE-PRESIDENT"	"Associate Vice-President"	2		2
+"ASSOCIATE VICE-PRESIDENT"	"Associate Vice-President"	1		2
 "CANADA RESEARCH CHAIR"	"Canada Research Chair"	-999		2.2
 "CANADA RESEARCH CHAIR TIER I"	"Canada Research Chair Tier I"	-999		2.2
 "CANADA RESEARCH CHAIR TIER II"	"Canada Research Chair Tier II"	-999		2.2
@@ -29,7 +29,7 @@
 "Clinical Lecturer"	"Clinical Lecturer"	1.4		1
 "Clinical Professor"	"Clinical Professor"	1		1
 "CLINICAL SCHOLAR"	"Clinical Scholar"	1.4		1
-"DEAN"	"Dean"	2		2
+"DEAN"	"Dean"	1		2
 "DEPARTMENT CHAIR"	"Department Chair"	2.1		2
 "DIRECTOR"	"Director"	2.1		2
 "Distinguished University Profe"	"Distinguished University Professor"	2.3		2
@@ -40,8 +40,8 @@
 "LECTURER"	"Lecturer"	1.4		1
 "Lecturer (Adjunct)"	"Lecturer (Adjunct)"	2.5		2
 "Lecturer (Part-Time)"	"Lecturer (Part-Time)"	1.5		2
-"PROFESSOR"	"Professor"	1		1
-"Professor"	"Professor"	1		1
+"PROFESSOR"	"Professor"	1.1		1
+"Professor"	"Professor"	1.1		1
 "Professor (Part-Time)"	"Professor (Part-Time)"	1.01		1
 "Professor Emeritus"	"Professor Emeritus"	2.1		2
 "PROGRAM CHAIR"	"Program Chair"	2.1		2
@@ -49,28 +49,28 @@
 "PROGRAM DIRECTOR"	"Program Director"	2.1		2
 "SENATOR WILLIAM MCMASTER CHAIR"	"Senator William McMaster Chair"	2.2		3
 "University Scholar"	"University Scholar"	3		3
-"VICE-PRESIDENT, RESEARCH"	"Vice-President, Research"	2		2
+"VICE-PRESIDENT, RESEARCH"	"Vice-President, Research"	1		2
 "Visiting Assistant Professor"	"Visiting Assistant Professor"	4		4
 "Visiting Associate Professor"	"Visiting Associate Professor"	4		4
 "Visiting Lecturer"	"Visiting Lecturer"	4		4
 "Visiting Professor"	"Visiting Professor"	4		4
 "WORK/STUDY STUDENT"	"Work Study Student"	-999	"should be excluded"	-999
-"ASSOCIATE DEAN RESEARCH"	"Associate Dean, Research"	2		2
-"Vice-Provost & Dean of Grad St"	"Vice-Provost & Dean of Graduate Studies"	2		2
-"Vice-Provost (Faculty)"	"Vice-Provost (Faculty)"	2		2
-"Vice-Provost (Int'l Affairs)"	"Vice-Provost (International Affairs)"	2		2
-"Vice-Provost (Teach&Learn)"	"Vice-Provost (Teaching & Learning)"	2		2
+"ASSOCIATE DEAN RESEARCH"	"Associate Dean, Research"	1		2
+"Vice-Provost & Dean of Grad St"	"Vice-Provost & Dean of Graduate Studies"	1		2
+"Vice-Provost (Faculty)"	"Vice-Provost (Faculty)"	1		2
+"Vice-Provost (Int'l Affairs)"	"Vice-Provost (International Affairs)"	1		2
+"Vice-Provost (Teach&Learn)"	"Vice-Provost (Teaching & Learning)"	1		2
 "Adjunct Lecturer"	"Adjunct Lecturer"	2.5		2.5
 "Faculty Member"	"Assistant Professor"	1.2		1
 "Assistant Professor (PT)"	"Assistant Professor (Part-Time)"	1.22		1
 "Associate Professor (PT)"	"Associate Professor (Part-Time)"	1.11		1
 "Distinguished Univ Professor"	"Distinguished University Professor"	2.3		2
 "Scholar in Residence"	"Scholar in Residence"	3		0
-"DEAN & V.P. (HEALTH SCIENCES)"	"Dean and Vice-President"	2		0
+"DEAN & V.P. (HEALTH SCIENCES)"	"Dean and Vice-President"	1		0
 "POST DOCTORATE FELLOW"	"Postdoctoral Fellow"	-999	"not included at this point"	0
-"PRESIDENT & VICE-CHANCELLOR"	"President and Vice-Chancellor"	2		0
-"PROVOST & VICE-PRESIDENT(ACAD)"	"Provost and Vice-President, Academic"	2		0
+"PRESIDENT & VICE-CHANCELLOR"	"President and Vice-Chancellor"	1		0
+"PROVOST & VICE-PRESIDENT(ACAD)"	"Provost and Vice-President, Academic"	1		0
 "RESEARCH FELLOW"	"Research Fellow"	2		0
-"VICE-PRESIDENT ADMIN"	"Vice-President, Administration"	3		0
-"VICE-PRESIDENT RESEARCH"	"Vice-President, Research"	2		0
-"VICE-PRESIDENT UNIV ADV"	"Vice-President, University Advancement"	2		0
+"VICE-PRESIDENT ADMIN"	"Vice-President, Administration"	1		0
+"VICE-PRESIDENT RESEARCH"	"Vice-President, Research"	1		0
+"VICE-PRESIDENT UNIV ADV"	"Vice-President, University Advancement"	1		0
