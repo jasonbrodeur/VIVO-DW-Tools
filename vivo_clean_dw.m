@@ -575,6 +575,16 @@ if exit_flag == 0
         end
     end
     
+    %%%%%%%%%%%% APPLY CUSTOM/MANUAL CORRECTIONS %%%%%%%%%%%%%%%%%%%
+    ind_custom = find(strcmpi(dw(:,macid_col),'craig')==1 & strcmpi(dw(:,pos_col),'Canada Research Chair')==1);
+    if isempty(ind_custom)==1
+        disp('Could not manually correct position information for macID: craig. Entry not found.');
+    else
+        dw{ind_custom,pos_col}= 'Professor';
+        disp('Manually corrected position information for macID: craig.');
+    end
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
     %% Faculty Name - lookup table replace %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % load the faculties lookup table
     fid_fac = fopen([lut_path '/vivo_lookup_faculties.tsv'],'r');
