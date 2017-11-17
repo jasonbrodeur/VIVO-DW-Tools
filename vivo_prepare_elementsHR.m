@@ -388,8 +388,8 @@ try
             %%% others), according to faculty of primary appointment.
             switch tmp_output{1,fac_col}
                 case 'Faculty of Health Sciences'
-%                     tmp_output{1,auth_col} = 'FHS'; Commented on 16-Nov,2017 -- We decided to try switching all people to NONFHS authentication 
-                    tmp_output{1,auth_col} = 'NONFHS';
+                    tmp_output{1,auth_col} = 'FHS'; %Commented on 16-Nov,2017 -- We decided to try switching all people to NONFHS authentication 
+%                     tmp_output{1,auth_col} = 'NONFHS';
                     
                 otherwise
                     tmp_output{1,auth_col} = 'NONFHS';
@@ -454,7 +454,8 @@ try
         %%% others), according to faculty of primary appointment.
         switch tmp_output{1,fac_col}
             case 'Faculty of Health Sciences'
-                tmp_output{1,auth_col} = 'FHS';
+                tmp_output{1,auth_col} = 'FHS';%Commented on 16-Nov,2017 -- We decided to try switching all people to NONFHS authentication 
+%                 tmp_output{1,auth_col} = 'NONFHS';
             otherwise
                 tmp_output{1,auth_col} = 'NONFHS';
         end
@@ -476,7 +477,9 @@ try
             elseif strcmp(dw2hr{k,1},'[AuthenticatingAuthority]')==1 %%% If we're on the AuthenticatingAuthority field, fill it in based on reported faculty.
                 switch tmp_output{1,fac_col}
                     case {'Faculty of Health Sciences'} % Maybe we add CSU in here?
-                        tmp_print = 'FHS';
+                        tmp_print = 'FHS'; %
+%                         tmp_print = 'NONFHS';
+                        
                     otherwise
                         tmp_print = 'NONFHS';
                 end
