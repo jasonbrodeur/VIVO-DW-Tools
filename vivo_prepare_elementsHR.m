@@ -388,7 +388,9 @@ try
             %%% others), according to faculty of primary appointment.
             switch tmp_output{1,fac_col}
                 case 'Faculty of Health Sciences'
-                    tmp_output{1,auth_col} = 'FHS';
+%                     tmp_output{1,auth_col} = 'FHS'; Commented on 16-Nov,2017 -- We decided to try switching all people to NONFHS authentication 
+                    tmp_output{1,auth_col} = 'NONFHS';
+                    
                 otherwise
                     tmp_output{1,auth_col} = 'NONFHS';
             end
