@@ -576,13 +576,13 @@ if exit_flag == 0
     end
     
     %%%%%%%%%%%% APPLY CUSTOM/MANUAL CORRECTIONS %%%%%%%%%%%%%%%%%%%
-    ind_custom = find(strcmpi(dw(:,macid_col),'craig')==1 & strcmpi(dw(:,pos_col),'Canada Research Chair')==1);
-    if isempty(ind_custom)==1
-        disp('Could not manually correct position information for macID: craig. Entry not found.');
-    else
-        dw{ind_custom,pos_col}= 'Professor';
-        disp('Manually corrected position information for macID: craig.');
-    end
+%     ind_custom = find(strcmpi(dw(:,macid_col),'craig')==1 & strcmpi(dw(:,pos_col),'Canada Research Chair')==1);
+%     if isempty(ind_custom)==1
+%         disp('Could not manually correct position information for macID: craig. Entry not found.');
+%     else
+%         dw{ind_custom,pos_col}= 'Professor';
+%         disp('Manually corrected position information for macID: craig.');
+%     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     %% Faculty Name - lookup table replace %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -770,6 +770,14 @@ if exit_flag == 0
         end
         fclose(fid_nomacid);
         dw(ind_nomacid,:) = [];
+    end
+    %% Remove any faculty members that have opted-out (in /lookup_tables/)
+    %%% Load the opt-out sheet (structure: employee id | first name | last name )
+    [hdr_optout,optout] = sheet2cell([lut_path '/opt-out.csv'],',',1);
+    tmp_col = find(strcmp(hdr_optout,'empl_id')==1);
+    for i = 1:1:size(optout,1)
+        rows2remove = find(strcmp(dw(:,id_col),optout{i,tmp_col})==1);
+    dw(rows2remove,:) = [];
     end
     %% Close the report, Write the Final Output:
     fclose(fid_report);

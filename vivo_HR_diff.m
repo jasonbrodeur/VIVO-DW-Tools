@@ -7,10 +7,10 @@ function [add_remove_flag] = vivo_HR_diff(v1, v2)
 if ispc==1
     if exist('D:/Seafile/VIVO_Secure_Data/','dir')==7
         top_path = 'D:/Seafile/VIVO_Secure_Data/';
-        HRadd_path = 'D:\Seafile\VIVO_Pilot_Project\Elements\Weekly_Faculty_Additions\';
+        HRadd_path = 'D:\Seafile\VIVO_Pilot_Project\Elements\Publication Claiming\Weekly_Faculty_Additions\';
     elseif exist('C:\MacDrive\Seafile\VIVO_Secure_Data\','dir')==7      % Gabriela, you can add in your path here
         top_path = 'C:\MacDrive\Seafile\VIVO_Secure_Data\';                    % Gabriela, you can add in your path here
-        HRadd_path = '';%'D:\Seafile\VIVO_Pilot_Project\Elements\Weekly_Faculty_Additions\';% Gabriela, you can add in your path here
+        HRadd_path = '';%'D:\Seafile\VIVO_Pilot_Project\Elements\Publication Claiming\Weekly_Faculty_Additions\';% Gabriela, you can add in your path here
     else
         disp('Starting path not assigned. See line ~20 Exiting'); return;
     end

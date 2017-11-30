@@ -32,7 +32,17 @@ function [] = vivo_prepare_elementsHR(fname_in, automated_flag)
 %%% 2017-10-20
 % 4. Revised the phone number process to use F&S directory first, then DW
 
+%% Outstanding work to be done: 
+%1. Need to check the list of non-faculty additions against the existing
+%list of faculty users (and only create a non-faculty account if the person
+%doesn't have a faculty one). A faculty member has already tried to add
+%themselves to the non-faculty list. 
+%2. 
 
+
+
+
+%%
 if nargin<2
     automated_flag = 0; %sets the automated flag to 0
 end
@@ -183,29 +193,36 @@ end
 clear C;
 %% Load the non-faculty users file:
 %%% We've assumed the same format as the Faculty file -- dangerous? Probably!
-fid_nf = fopen([nonfac_path '/' 'NonFacultyUsers-current.csv'],'r');
-tline = fgetl(fid_nf);
-frewind(fid_nf);
-numcols2 = length(regexp(tline,','))+1;
-formatspec = repmat('%s',1,numcols2);
-C = textscan(fid_nf,formatspec,'Delimiter',',');
+[headers_nf,dw_nf] = sheet2cell([nonfac_path '/NonFacultyUsers-current.tsv'],'\t',1);   
 % Remove quotation marks (causes issues):
-for pp = 1:1:size(C,2)
-    isString = cellfun('isclass', C{1,pp}, 'char');
-    C{1,pp}(isString) = strrep(C{1,pp}(isString), '"', '');
-end
+dw_nf = strrep(dw_nf,'"','');
+headers_nf = strrep(headers_nf,'"','');
 
-fclose(fid_nf);
-
-%%% Extract headers - compare to header file for faculty users
-match_flag = NaN*ones(numcols2,1);
-for i = 1:1:numcols2
-    % headers{i,1} = C{1,i}(1,1){1,1};
-    headers_nf{i,1} = C{1,i}{1,1};%{1,1};
-    match_flag(i,1) = strcmp(headers_nf{i,1},headers{i,1});
-    dw_nf(:,i) = C{1,i}(2:end,1);
-end
-clear C;
+%%% Comment added 20171124 by JJB. Removed in favour of sheet2cell method
+%%% (above)
+% % % fid_nf = fopen([nonfac_path '/' 'NonFacultyUsers-current.csv'],'r');
+% % % tline = fgetl(fid_nf);
+% % % frewind(fid_nf);
+% % % numcols2 = length(regexp(tline,','))+1;
+% % % formatspec = repmat('%s',1,numcols2);
+% % % C = textscan(fid_nf,formatspec,'Delimiter',',');
+% % % % Remove quotation marks (causes issues):
+% % % for pp = 1:1:size(C,2)
+% % %     isString = cellfun('isclass', C{1,pp}, 'char');
+% % %     C{1,pp}(isString) = strrep(C{1,pp}(isString), '"', '');
+% % % end
+% % % 
+% % % fclose(fid_nf);
+% % % 
+% % % %%% Extract headers - compare to header file for faculty users
+% % % match_flag = NaN*ones(numcols2,1);
+% % % for i = 1:1:numcols2
+% % %     % headers{i,1} = C{1,i}(1,1){1,1};
+% % %     headers_nf{i,1} = C{1,i}{1,1};%{1,1};
+% % %     match_flag(i,1) = strcmp(headers_nf{i,1},headers{i,1});
+% % %     dw_nf(:,i) = C{1,i}(2:end,1);
+% % % end
+% % % clear C;
 % if sum(match_flag,1)~=numcols2
 %     disp('The header file for the Faculty (DW) data does not match with that for the non-faculty users. Inspect and fix this before proceeding');
 %     return;
@@ -264,11 +281,11 @@ for i = 1:1:size(dw,1)
         if length(ind_email_match)>1
             dw{i,phone_col} = FSD{ind_email_match(1),FSD_phone_col};
 %             dw{i,phone_col} = ['905-525-9140 ext. ' FSD{ind_email_match(1),FSD_phone_col}];
-            disp(['Found > 1 email match for ' dw{i,email_col} '. extensions = ' FSD{ind_email_match,FSD_phone_col}]);
+%             disp(['Found > 1 email match for ' dw{i,email_col} '. extensions = ' FSD{ind_email_match,FSD_phone_col}]);
         else
             dw{i,phone_col} = FSD{ind_email_match,FSD_phone_col};
 %             dw{i,phone_col} = ['905-525-9140 ext. ' FSD{ind_email_match,FSD_phone_col}];
-            disp(['Found email match for ' dw{i,email_col} '. extension = ' FSD{ind_email_match,FSD_phone_col}]);
+%             disp(['Found email match for ' dw{i,email_col} '. extension = ' FSD{ind_email_match,FSD_phone_col}]);
         end
     else %otherwise, paste in from DW
         if ~isempty(dw_phone)
@@ -441,6 +458,15 @@ ind_noID = find(cellfun('isempty',dw_nf(:,id_col))==1);
 if size(ind_noID,1)>0
     disp(['Entries with no unique ID (employee ID) found in rows:' num2str((ind_noID+1)') ' of the non-faculty users file. Ignoring']);
     dw_nf(ind_noID,:)=[];
+end
+
+%%% Pad all employee ids to 9 digits
+for i = 1:1:size(dw_nf,1)
+    tmp3 = dw_nf{i,id_col};
+   if  numel(tmp3) < 9
+       dw_nf{i,id_col} = [repmat('0',1,9-numel(tmp3)) dw_nf{i,id_col}];
+       disp(['Corrected non-faculty employee id ' tmp3 ' to ' dw_nf{i,id_col}]);
+   end
 end
 
 [unique_emplnum2,ia,ic] = unique(dw_nf(:,id_col));
