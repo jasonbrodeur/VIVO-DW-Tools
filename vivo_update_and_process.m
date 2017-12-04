@@ -50,7 +50,7 @@ end
 clear ind_right_file tmp2 file_vers ind*
 %% Try and copy the newest CLASS file to the 01_DW_Teaching directory
 
-%%%%%%%%%%%%%%%%%%%% Establish the most recent version of the FACULTY file:
+%%%%%%%%%%%%%%%%%%%% Establish the most recent version of the CLASS file:
 % tmp2 = tmp(
 file_vers = nan.*ones(size(tmp,1),1);
 ind1 = find(strncmp('MCM_VIVO_CLASS-',tmp(:,1),length('MCM_VIVO_CLASS-'))==1);
@@ -75,6 +75,9 @@ else
 end
 
 clear tmp
+%% Run 
+disp('Running vivo_update_nonfac')
+vivo_update_nonfac;
 %% Run vivo_clean_dw and vivo_prepare_elementsHR
 disp('Running vivo_clean_dw')
 vivo_clean_dw(faculty_file_ver);

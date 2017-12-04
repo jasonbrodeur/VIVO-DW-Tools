@@ -88,7 +88,13 @@ for i = 1:1:size(formdata,1)
             action = ' updated in ';
         end
 
-            % Write it to our non-faculty list
+            %%%%% % Write it to our non-faculty list
+            % Ensure that employee ID is 9-digits
+            tmp3 = formdata{i,emplnum_col};
+            if  numel(tmp3) < 9
+                formdata{i,emplnum_col} = [repmat('0',1,9-numel(tmp3)) tmp3];
+                disp(['Corrected non-faculty employee id ' tmp3 ' to ' formdata{i,emplnum_col}]);
+            end
             dw_nf{dw_nf_row,strcmp(headers_nf(:,1),'ID')==1} = formdata{i,emplnum_col};
             dw_nf{dw_nf_row,strcmp(headers_nf(:,1),'MAC ID')==1} = formdata{i,macid_col};
             dw_nf{dw_nf_row,strcmp(headers_nf(:,1),'PRF First Name')==1} = formdata{i,fname_col};
